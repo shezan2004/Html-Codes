@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* 1. DESCENDANT SELECTOR (Space) */
+        /* Targets ALL <span> elements inside .parent, no matter how deep they are */
+        .parent span {
+            color: #e74c3c; /* Red */
+            font-weight: bold;
+        }
+
+        /* 2. CHILD SELECTOR (>) */
+        /* Targets ONLY <span> elements that are DIRECT children of .parent */
+        /* It will NOT affect a span nested inside another div */
+        .parent > span {
+            border: 2px solid #2ecc71; /* Green Border */
+        }
+
+        /* 3. ADJACENT SIBLING SELECTOR (+) */
+        /* Targets the very next element, BUT ONLY if it immediately follows the first */
+        /* Here: The paragraph immediately following the header */
+        h2 + p {
+            background-color: #f1c40f; /* Yellow Highlight */
+        }
+
+        /* 4. GENERAL SIBLING SELECTOR (~) */
+        /* Targets ALL paragraphs that follow the header, as long as they share the same parent */
+        h2 ~ p {
+            font-style: italic;
+        }
+
+        /* Layout styling for clarity */
+        div { padding: 10px; border: 1px dashed #ccc; margin: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="parent">
+        <h2>Combinator Demo</h2>
+        
+        <span>I am a direct child (Red text + Green border).</span>
+        
+        <p>This is a paragraph immediately after the H2 (Yellow background + Italics).</p>
+        
+        <div>
+            <span>I am a nested descendant (Red text, but NO green border).</span>
+        </div>
+
+        <p>I am a general sibling (Italics only).</p>
+    </div>
+
+</body>
+</html>
