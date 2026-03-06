@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>University Admission Form</title>
+</head>
+<body>
+
+    <h1>University Admission Form</h1>
+
+    <form action="/submit" method="POST">
+        
+        <fieldset>
+            <legend>Personal Info</legend>
+            
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name"  required>
+            <br><br>
+
+            <label for="user-email">Email Address:</label>
+            <input type="email" id="user-email" name="user-email" required>
+            <br><br>
+
+            <label for="birth-date">Date of Birth:</label>
+            <input type="date" id="birth-date" name="birth-date" required>
+            <br><br>
+
+            <label>Gender:</label>
+            <input type="radio" id="male" name="gender" value="male" required>
+            <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">Female</label>
+            <br><br>
+        </fieldset>
+
+        <fieldset>
+            <legend>Academic Info</legend>
+            
+            <label for="school">Previous School:</label>
+            <input type="text" id="school" name="school" maxlength="100" required>
+            <br><br>
+
+            <label for="course">Preferred Course:</label>
+            <select id="course" name="course" required>
+                <option value="">Select a Course</option>
+                <option value="cs">Computer Science</option>
+                <option value="bio">Biology</option>
+                <option value="math">Mathematics</option>
+            </select>
+            <br><br>
+
+            <label>Interests:</label>
+            <input type="checkbox" id="research" name="interests" value="research">
+            <label for="research">Research</label>
+            <input type="checkbox" id="sports" name="interests" value="sports">
+            <label for="sports">Sports</label>
+            <input type="checkbox" id="arts" name="interests" value="arts">
+            <label for="arts">Arts</label>
+            <br><br>
+
+            <label for="transcript">Upload Transcript:</label>
+            <input type="file" id="transcript" name="transcript" required>
+            <br><br>
+        </fieldset>
+
+        <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
+
+    </form>
+
+</body>
+</html>
