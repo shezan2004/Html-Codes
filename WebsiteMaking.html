@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big HTML + CSS Demo</title>
+
+<style>
+
+/* Reset */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+/* Body */
+body{
+background:#f4f6f8;
+line-height:1.6;
+}
+
+/* Navbar */
+nav{
+background:#1f2937;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 40px;
+position:sticky;
+top:0;
+}
+
+nav h1{
+font-size:24px;
+}
+
+nav ul{
+display:flex;
+list-style:none;
+}
+
+nav ul li{
+margin-left:20px;
+}
+
+nav ul li a{
+color:white;
+text-decoration:none;
+font-weight:bold;
+transition:0.3s;
+}
+
+nav ul li a:hover{
+color:#38bdf8;
+}
+
+/* Hero section */
+
+.hero{
+height:80vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+background:linear-gradient(120deg,#2563eb,#22c55e);
+color:white;
+}
+
+.hero h2{
+font-size:50px;
+margin-bottom:20px;
+}
+
+.hero p{
+font-size:20px;
+width:60%;
+}
+
+.hero button{
+margin-top:25px;
+padding:12px 30px;
+border:none;
+background:white;
+color:#2563eb;
+font-size:18px;
+border-radius:6px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.hero button:hover{
+background:#e5e7eb;
+}
+
+/* Section title */
+
+.section-title{
+text-align:center;
+margin:60px 0 30px;
+font-size:32px;
+}
+
+/* Card container */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:20px 40px;
+}
+
+.card{
+background:white;
+border-radius:10px;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+padding:20px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+}
+
+.card img{
+width:100%;
+border-radius:8px;
+}
+
+.card h3{
+margin:10px 0;
+}
+
+.card p{
+font-size:14px;
+}
+
+/* Gallery */
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+padding:40px;
+}
+
+.gallery img{
+width:100%;
+height:200px;
+object-fit:cover;
+border-radius:10px;
+transition:0.3s;
+}
+
+.gallery img:hover{
+transform:scale(1.05);
+}
+
+/* Table */
+
+.table-section{
+padding:40px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+table th, table td{
+padding:12px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+table th{
+background:#2563eb;
+color:white;
+}
+
+/* Form */
+
+.form-section{
+padding:40px;
+display:flex;
+justify-content:center;
+}
+
+form{
+width:400px;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+form input,
+form textarea{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+form button{
+width:100%;
+padding:12px;
+background:#22c55e;
+border:none;
+color:white;
+font-size:16px;
+border-radius:5px;
+cursor:pointer;
+}
+
+form button:hover{
+background:#16a34a;
+}
+
+/* Footer */
+
+footer{
+background:#111827;
+color:white;
+padding:40px;
+margin-top:40px;
+}
+
+.footer-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+footer ul{
+list-style:none;
+}
+
+footer ul li{
+margin:8px 0;
+}
+
+footer ul li a{
+color:#9ca3af;
+text-decoration:none;
+}
+
+footer ul li a:hover{
+color:white;
+}
+
+/* Animation */
+
+@keyframes float{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0px);}
+}
+
+.float{
+animation:float 3s infinite ease-in-out;
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.hero h2{
+font-size:35px;
+}
+
+.hero p{
+width:90%;
+}
+
+nav{
+flex-direction:column;
+}
+
+nav ul{
+margin-top:10px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+<h1>MyWebsite</h1>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Services</a></li>
+<li><a href="#">Gallery</a></li>
+<li><a href="#">Contact</a></li>
+</ul>
+</nav>
+
+<section class="hero">
+<h2 class="float">Welcome to My Big Website</h2>
+<p>This is a large example of HTML and CSS combined together to create a full webpage layout including navigation, cards, tables, forms and responsive design.</p>
+<button>Explore More</button>
+</section>
+
+<h2 class="section-title">Our Services</h2>
+
+<div class="cards">
+
+<div class="card">
+<img src="https://picsum.photos/300/200?1">
+<h3>Web Development</h3>
+<p>Modern responsive websites built using HTML, CSS and JavaScript technologies.</p>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/200?2">
+<h3>UI Design</h3>
+<p>Clean and beautiful interface design focused on user experience.</p>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/200?3">
+<h3>SEO Optimization</h3>
+<p>Improve website ranking and visibility in search engines.</p>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/200?4">
+<h3>App Development</h3>
+<p>Mobile and web applications built with modern frameworks.</p>
+</div>
+
+</div>
+
+<h2 class="section-title">Image Gallery</h2>
+
+<div class="gallery">
+
+<img src="https://picsum.photos/400/300?5">
+<img src="https://picsum.photos/400/300?6">
+<img src="https://picsum.photos/400/300?7">
+<img src="https://picsum.photos/400/300?8">
+<img src="https://picsum.photos/400/300?9">
+<img src="https://picsum.photos/400/300?10">
+
+</div>
+
+<h2 class="section-title">Pricing Table</h2>
+
+<div class="table-section">
+
+<table>
+
+<tr>
+<th>Plan</th>
+<th>Price</th>
+<th>Storage</th>
+<th>Support</th>
+</tr>
+
+<tr>
+<td>Basic</td>
+<td>$5</td>
+<td>10GB</td>
+<td>Email</td>
+</tr>
+
+<tr>
+<td>Standard</td>
+<td>$10</td>
+<td>50GB</td>
+<td>Email + Chat</td>
+</tr>
+
+<tr>
+<td>Premium</td>
+<td>$20</td>
+<td>200GB</td>
+<td>24/7 Support</td>
+</tr>
+
+</table>
+
+</div>
+
+<h2 class="section-title">Contact Us</h2>
+
+<div class="form-section">
+
+<form>
+
+<input type="text" placeholder="Your Name">
+<input type="email" placeholder="Your Email">
+<textarea rows="5" placeholder="Your Message"></textarea>
+<button type="submit">Send Message</button>
+
+</form>
+
+</div>
+
+<footer>
+
+<div class="footer-grid">
+
+<div>
+<h3>About</h3>
+<p>Example website layout built using only HTML and CSS.</p>
+</div>
+
+<div>
+<h3>Links</h3>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Services</a></li>
+<li><a href="#">Gallery</a></li>
+</ul>
+</div>
+
+<div>
+<h3>Contact</h3>
+<ul>
+<li>Email: example@mail.com</li>
+<li>Phone: 123456789</li>
+<li>Location: Earth</li>
+</ul>
+</div>
+
+</div>
+
+</footer>
+
+</body>
+</html>
