@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DOM Manipulation - Table Version</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>User Information Table</h1>
+
+    <label for="nameInp">Name:</label>
+    <input type="text" id="nameInp" placeholder="Enter name">
+    
+    <br><br>
+
+    <label>Gender:</label>
+    <input type="radio" name="gender" value="Male" id="male"> <label for="male">Male</label>
+    <input type="radio" name="gender" value="Female" id="female"> <label for="female">Female</label>
+
+    <br><br>
+
+    <button onclick="addRow();">Add to Table</button>
+    <button onclick="removeLast();">Remove Last Row</button>
+    <button onclick="clearTable();">Clear All</button>
+
+    <div id="tableContainer">
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        const tableBody = document.getElementById("tableBody");
+
+        function addRow() {
+            const nameValue = document.getElementById("nameInp").value;
+           
+            const genderValue = document.querySelector('input[name="gender"]:checked');
+
+            if (!nameValue || !genderValue) {
+                alert("Please enter a name and select a gender!");
+                return;
+            }
+
+            
+            const row = document.createElement("tr");
+            const nameCell = document.createElement("td");
+            const genderCell = document.createElement("td");
+ 
+            nameCell.textContent = nameValue;
+            genderCell.textContent = genderValue.value;
+
+            row.appendChild(nameCell);
+            row.appendChild(genderCell);
+            tableBody.appendChild(row);
+
+            document.getElementById("nameInp").value = "";
+            genderValue.checked = false;
+        }
+
+        function removeLast() {
+            if (tableBody.lastElementChild) {
+                tableBody.removeChild(tableBody.lastElementChild);
+            }
+        }
+
+        function clearTable() {
+            tableBody.innerHTML = "";
+        }
+    </script>
+
+</body>
+</html>
