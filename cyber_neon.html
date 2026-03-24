@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .glitch-btn {
+            width: 200px;
+            height: 60px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            letter-spacing: 3px;
+            line-height: 60px;
+            transition: all 0.2s;
+            position: relative;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .glitch-btn::after {
+            content: 'ENTER VOID';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 5%, #ff013c 5%);
+            box-shadow: 5px 0px 0px #00e6f6;
+            text-shadow: -3px -3px 0px #f8f005, 3px 3px 0px #00e6f6;
+            clip-path: inset(50% 50% 50% 50%);
+        }
+
+        .glitch-btn:hover::after {
+            animation: glitch-anim 1s;
+            animation-timing-function: steps(2, end);
+            clip-path: inset(0px 0px 0px 0px);
+        }
+
+        .glitch-btn:hover {
+            background: linear-gradient(45deg, transparent 5%, #ff013c 5%);
+            box-shadow: 0px 10px 0px #00e6f6;
+            transform: translateY(-5px);
+        }
+
+        @keyframes glitch-anim {
+            0% { clip-path: inset(80% 0 0 0); transform: translate(-20px, -10px); }
+            20% { clip-path: inset(10% 0 80% 0); transform: translate(10px, 10px); }
+            40% { clip-path: inset(50% 0 30% 0); transform: translate(-10px, 10px); }
+            60% { clip-path: inset(20% 0 50% 0); transform: translate(20px, -10px); }
+            80% { clip-path: inset(40% 0 10% 0); transform: translate(-10px, 5px); }
+            100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="glitch-btn">Enter Void</button>
+
+</body>
+</html>
