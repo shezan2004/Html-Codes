@@ -1,0 +1,64 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh; /* Takes full height of screen */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+    background-color: #f0f2f5;
+}
+
+.calculator {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+#display {
+    background-color: #fff;
+    height: 60px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 15px;
+    font-size: 2rem;
+    color: #333;
+    overflow: hidden;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+    gap: 12px;
+}
+
+.btn {
+    padding: 18px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #ebebeb;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.95); /* Little 'click' effect */
+}
+
+/* Logic for button sizing */
+.col-2 { grid-column: span 2; }
+.row-2 { grid-row: span 2; }
+
+/* Colors matching your image */
+.red { background-color: #ff5252; color: white; }
+.orange { background-color: #ff9f0a; color: white; }
+.green { background-color: #34c759; color: white; }
