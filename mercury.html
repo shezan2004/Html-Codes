@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercury Slide Toggle</title>
+    <style>
+        :root {
+            --bg: #1a1a1a;
+            --accent: #00ff88;
+        }
+
+        body {
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            filter: contrast(20); /* The secret for the "liquid" effect */
+        }
+
+        .switch {
+            position: relative;
+            width: 120px;
+            height: 50px;
+            background: #333;
+            border-radius: 50px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        /* The moving "liquid" ball */
+        .ball {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        /* The hidden checkbox */
+        input {
+            display: none;
+        }
+
+        input:checked + .switch .ball {
+            left: 75px;
+            background: var(--accent);
+        }
+
+        /* Liquid glow effect */
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
+            opacity: 0;
+            transition: 0.5s;
+        }
+
+        input:checked + .switch .glow {
+            opacity: 0.2;
+        }
+
+        /* SVG Filter for the "Gooey" look */
+        svg {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <label>
+        <input type="checkbox">
+        <div class="switch">
+            <div class="ball"></div>
+            <div class="glow"></div>
+        </div>
+    </label>
+
+    <svg>
+        <defs>
+            <filter id="gooey">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+                <feBlend in="SourceGraphic" in2="goo" />
+            </filter>
+        </defs>
+    </svg>
+
+</body>
+</html>
