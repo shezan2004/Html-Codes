@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Temp Converter</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        h2 { color: #333; margin-bottom: 20px; }
+
+        .input-box {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box; /* Prevents padding from breaking width */
+            font-size: 16px;
+        }
+
+        .equals {
+            font-size: 24px;
+            color: #4a90e2;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Temp Converter</h2>
+        
+        <div class="input-box">
+            <label>Celsius (°C)</label>
+            <input type="number" id="celsius" placeholder="Enter Celsius">
+        </div>
+
+        <div class="equals">↕</div>
+
+        <div class="input-box">
+            <label>Fahrenheit (°F)</label>
+            <input type="number" id="fahrenheit" placeholder="Enter Fahrenheit">
+        </div>
+
+        <p id="msg" style="font-size: 12px; color: #999;">Type in either box to convert</p>
+    </div>
+
+    <script>
+        const celInput = document.getElementById('celsius');
+        const fahInput = document.getElementById('fahrenheit');
+
+        // Logic: (C * 9/5) + 32 = F
+        celInput.addEventListener('input', () => {
+            const c = parseFloat(celInput.value);
+            if (!isNaN(c)) {
+                fahInput.value = ((c * 9/5) + 32).toFixed(2);
+            } else {
+                fahInput.value = "";
+            }
+        });
+
+        // Logic: (F - 32) * 5/9 = C
+        fahInput.addEventListener('input', () => {
+            const f = parseFloat(fahInput.value);
+            if (!isNaN(f)) {
+                celInput.value = ((f - 32) * 5/9).toFixed(2);
+            } else {
+                celInput.value = "";
+            }
+        });
+    </script>
+</body>
+</html>
