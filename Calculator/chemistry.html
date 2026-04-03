@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informative Element Card</title>
+    <style>
+        :root {
+            --gold: #ffd700;
+            --bg-dark: #0f172a;
+            --text-gray: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* The Card Container */
+        .element-card {
+            background: #1e293b;
+            width: 320px;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--gold);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .element-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Top Header Info */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .atomic-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        .weight {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Visual Centerpiece */
+        .symbol {
+            font-size: 5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 10px 0;
+            background: linear-gradient(to bottom, #fff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .name {
+            text-align: center;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        /* Information Table */
+        .info-grid {
+            border-top: 1px solid #334155;
+            padding-top: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .info-item span {
+            color: var(--text-gray);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .info-item strong {
+            color: #f1f5f9;
+        }
+
+        /* Decorative "Glow" */
+        .element-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="element-card">
+        <div class="header">
+            <div class="atomic-number">79</div>
+            <div class="weight">196.967 u</div>
+        </div>
+
+        <div class="symbol">Au</div>
+        <div class="name">Gold</div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <span>Group</span>
+                <strong>11 (Transition Metal)</strong>
+            </div>
+            <div class="info-item">
+                <span>Melting Point</span>
+                <strong>1,064°C</strong>
+            </div>
+            <div class="info-item">
+                <span>Configuration</span>
+                <strong>[Xe] 4f¹⁴ 5d¹⁰ 6s¹</strong>
+            </div>
+            <div class="info-item">
+                <span>Density</span>
+                <strong>19.30 g/cm³</strong>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
