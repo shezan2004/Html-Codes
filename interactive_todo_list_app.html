@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple To-Do App</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 50px;
+    }
+    input {
+      padding: 8px;
+      width: 200px;
+    }
+    button {
+      padding: 8px 12px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    li {
+      margin: 10px 0;
+      list-style: none;
+    }
+    .done {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>To-Do List</h1>
+
+  <input type="text" id="taskInput" placeholder="Enter task">
+  <button onclick="addTask()">Add</button>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    let tasks = [];
+
+    function addTask() {
+      let input = document.getElementById("taskInput");
+      let taskText = input.value.trim();
+
+      if (taskText === "") {
+        alert("Enter something!");
+        return;
+      }
+
+      tasks.push(taskText);
+      input.value = "";
+      displayTasks();
+    }
+
+    function displayTasks() {
+      let list = document.getElementById("taskList");
+      list.innerHTML = "";
+
+      for (let i = 0; i < tasks.length; i++) {
+        let li = document.createElement("li");
+
+        li.textContent = tasks[i];
+
+        // Toggle done
+        li.onclick = function () {
+          li.classList.toggle("done");
+        };
+
+        // Remove button
+        let btn = document.createElement("button");
+        btn.textContent = "Remove";
+
+        btn.onclick = function () {
+          tasks.splice(i, 1);
+          displayTasks();
+        };
+
+        li.appendChild(btn);
+        list.appendChild(li);
+      }
+    }
+  </script>
+
+</body>
+</html>
