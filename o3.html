@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>DOM Tracing Practice</title>
+</head>
+<body>
+
+<h2>DOM Tracing Practice</h2>
+
+<input type="text" id="inp" placeholder="Type something">
+<br><br>
+
+<div id="data"></div>
+
+<button onclick="getData()">Add</button>
+<button onclick="removeItem()">Remove First</button>
+<button onclick="removeAll()">Remove All</button>
+
+<p><b>Current List:</b></p>
+<pre id="output"></pre>
+
+<script>
+
+const div = document.getElementById("data");
+const ol = document.createElement("ol");
+div.appendChild(ol);
+
+const output = document.getElementById("output");
+
+// Function to show current DOM state
+function showState(action) {
+  console.log("Action:", action);
+  console.log("Current HTML:", div.innerHTML);
+  output.textContent = div.innerHTML;
+}
+
+// Add item
+function getData() {
+  const data = document.getElementById("inp").value;
+
+  const li = document.createElement("li");
+  li.textContent = data;
+
+  ol.appendChild(li);
+
+  showState("Added: " + data);
+}
+
+// Remove first item
+function removeItem() {
+  if (ol.firstChild) {
+    ol.removeChild(ol.firstChild);
+    showState("Removed first item");
+  } else {
+    showState("Nothing to remove");
+  }
+}
+
+// Remove entire list
+function removeAll() {
+  if (div.firstChild) {
+    div.removeChild(div.firstChild);
+    showState("Removed entire <ol>");
+  } else {
+    showState("Nothing to remove");
+  }
+}
+
+</script>
+
+</body>
+</html>
