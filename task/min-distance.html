@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Minimum Distance Finder</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            padding: 40px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            width: 400px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Min Distance Finder</h2>
+
+    <label>Enter Numbers (comma separated):</label>
+    <input type="text" id="nums" placeholder="e.g. 1,2,3,4,5">
+
+    <label>Target:</label>
+    <input type="number" id="target">
+
+    <label>Start Index:</label>
+    <input type="number" id="start">
+
+    <button onclick="calculate()">Find Distance</button>
+
+    <div class="result" id="output"></div>
+</div>
+
+<script>
+function calculate() {
+    let nums = document.getElementById("nums").value
+        .split(',')
+        .map(Number);
+
+    let target = Number(document.getElementById("target").value);
+    let start = Number(document.getElementById("start").value);
+
+    let minDist = Infinity;
+
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] === target) {
+            let dist = Math.abs(i - start);
+            if (dist < minDist) {
+                minDist = dist;
+            }
+        }
+    }
+
+    document.getElementById("output").innerText = "Minimum Distance: " + minDist;
+}
+</script>
+
+</body>
+</html>
