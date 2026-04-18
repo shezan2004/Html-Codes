@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Glassmorphism</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* The floating background blobs */
+        .blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #3b82f6 0%, #9333ea 100%);
+            border-radius: 50%;
+            filter: blur(50px);
+            z-index: -1;
+            animation: move 10s infinite alternate;
+        }
+
+        .blob-2 {
+            background: linear-gradient(135deg, #f43f5e 0%, #fbbf24 100%);
+            width: 400px;
+            height: 400px;
+            left: 10%;
+            animation-duration: 15s;
+            animation-delay: -2s;
+        }
+
+        @keyframes move {
+            from { transform: translate(-10%, -10%); }
+            to { transform: translate(20%, 20%); }
+        }
+
+        /* The Glass Card */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: white;
+            color: #0f172a;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="card">
+        <h1>Glass UI</h1>
+        <p>This is a sleek, modern interface created with pure HTML and CSS. No images, just math and vibes.</p>
+        <button onclick="alert('Stay cool!')">Get Started</button>
+    </div>
+
+</body>
+</html>
