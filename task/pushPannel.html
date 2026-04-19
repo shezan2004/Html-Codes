@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Git Push Panel</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #3a3a5f);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 30px;
+            border-radius: 12px;
+            width: 350px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 6px;
+            background: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .output {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #ccc;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🚀 Git Push Panel</h2>
+
+    <input type="text" id="repo" placeholder="Repository Name">
+    <textarea id="message" placeholder="Commit Message"></textarea>
+
+    <button onclick="gitPush()">Push to Git</button>
+
+    <div class="output" id="output"></div>
+</div>
+
+<script>
+    function gitPush() {
+        let repo = document.getElementById("repo").value;
+        let message = document.getElementById("message").value;
+
+        if (repo === "" || message === "") {
+            document.getElementById("output").innerText = "⚠️ Fill all fields";
+            return;
+        }
+
+        // Simulated output
+        document.getElementById("output").innerText =
+            "✔️ git add .\n✔️ git commit -m \"" + message + "\"\n✔️ git push origin main";
+    }
+</script>
+
+</body>
+</html>
