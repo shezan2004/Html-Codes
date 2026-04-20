@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My First Webpage</title>
+    <style>
+        /* CSS: This makes it look pretty */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        h1 { color: #333; }
+        p { color: #666; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Hello World!</h1>
+        <p>This is a basic HTML structure with embedded CSS and JS. Coding is basically just telling a computer exactly what to do (and then wondering why it did exactly what you said).</p>
+        
+        <button id="magicBtn">Click for Magic</button>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        // JavaScript: This adds the "brain"
+        const btn = document.getElementById('magicBtn');
+        const msg = document.getElementById('message');
+
+        btn.addEventListener('click', () => {
+            msg.innerText = "✨ You just ran your first script! ✨";
+            btn.style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
