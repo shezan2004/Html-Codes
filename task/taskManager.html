@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickTask App</title>
+    
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 { 
+            margin-top: 0; 
+            color: #2d3748;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #667eea;
+        }
+
+        button#addBtn {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button#addBtn:hover {
+            background: #5a67d8;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background: #f7fafc;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delete-btn {
+            background: #fed7d7;
+            color: #e53e3e;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background: #feb2b2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>QuickTasks</h2>
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="Add a new task...">
+            <button id="addBtn">Add</button>
+        </div>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        const input = document.getElementById('taskInput');
+        const addBtn = document.getElementById('addBtn');
+        const taskList = document.getElementById('taskList');
+
+        // Function to create and add a task
+        function addTask() {
+            const taskValue = input.value.trim();
+
+            if (taskValue === "") {
+                input.style.borderColor = "#e53e3e";
+                return;
+            }
+
+            // Reset border color if it was red
+            input.style.borderColor = "#e2e8f0";
+
+            // Create list item
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${taskValue}</span>
+                <button class="delete-btn">Delete</button>
+            `;
+
+            // Add delete functionality to the specific button
+            li.querySelector('.delete-btn').addEventListener('click', () => {
+                li.remove();
+            });
+
+            // Append to list and clear input
+            taskList.appendChild(li);
+            input.value = "";
+            input.focus();
+        }
+
+        // Event Listeners
+        addBtn.addEventListener('click', addTask);
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+    </script>
+
+</body>
+</html>
