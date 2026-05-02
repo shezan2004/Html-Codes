@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOID — Particle Galaxy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital@0;1&display=swap');
+
+  :root {
+    --bg: #02010a;
+    --accent: #7c3aed;
+    --glow: #a78bfa;
+    --hot: #f472b6;
+    --cold: #38bdf8;
+    --text: #e2e8f0;
+    --dim: #475569;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    cursor: none;
+  }
+
+  canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .ui {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .title {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    animation: fadeIn 2s ease forwards;
+  }
+
+  .title h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    letter-spacing: 0.4em;
+    background: linear-gradient(135deg, var(--glow), var(--hot), var(--cold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    line-height: 1;
+  }
+
+  .title p {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  .stats {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    animation: fadeIn 3s ease forwards;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    color: var(--glow);
+  }
+
+  .stat-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .controls {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: all;
+    animation: fadeIn 2.5s ease forwards;
+  }
+
+  .btn {
+    background: transparent;
+    border: 1px solid var(--dim);
+    color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    pointer-events: all;
+  }
+
+  .btn:hover {
+    border-color: var(--glow);
+    color: var(--glow);
+    box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
+  }
+
+  .cursor {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: var(--hot);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 100;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s;
+    box-shadow: 0 0 12px var(--hot), 0 0 24px rgba(244, 114, 182, 0.4);
+  }
+
+  .cursor-ring {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(167, 139, 250, 0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99;
+    transform: translate(-50%, -50%);
+    transition: transform 0.12s ease, width 0.2s, height 0.2s;
+  }
+
+  .mode-label {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: var(--dim);
+    text-transform: uppercase;
+    animation: fadeIn 2s ease forwards;
+  }
+
+  .mode-label span {
+    color: var(--glow);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px) translateX(var(--tx, 0)); }
+    to   { opacity: 1; transform: translateY(0)   translateX(var(--tx, 0)); }
+  }
+
+  .title { --tx: -50%; }
+  .stats { --tx: -50%; }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="ui">
+  <div class="title">
+    <h1>VOID</h1>
+    <p>Interactive Particle Galaxy — Move cursor to attract</p>
+  </div>
+
+  <div class="mode-label">Mode: <span id="modeText">ATTRACT</span></div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" id="particleCount">0</div>
+      <div class="stat-label">Particles</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="fps">0</div>
+      <div class="stat-label">FPS</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="velocity">0</div>
+      <div class="stat-label">Avg Speed</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="toggleMode">Toggle Mode</button>
+    <button class="btn" id="explode">Explode</button>
+    <button class="btn" id="reset">Reset</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+let W = canvas.width = window.innerWidth;
+let H = canvas.height = window.innerHeight;
+
+const mouse = { x: W / 2, y: H / 2, down: false };
+let mode = 'attract'; // attract | repel
+let frameCount = 0, lastTime = performance.now(), fps = 0;
+
+// ── Particle ──────────────────────────────────────────────
+class Particle {
+  constructor(x, y, vx, vy) {
+    this.x  = x  ?? Math.random() * W;
+    this.y  = y  ?? Math.random() * H;
+    this.vx = vx ?? (Math.random() - 0.5) * 2;
+    this.vy = vy ?? (Math.random() - 0.5) * 2;
+    this.life = 1;
+    this.size = Math.random() * 1.8 + 0.4;
+    const t = Math.random();
+    // color: cold blue → purple → hot pink
+    this.hue = 200 + t * 140; // 200–340
+    this.sat = 80 + Math.random() * 20;
+    this.trail = [];
+  }
+
+  update() {
+    const dx = mouse.x - this.x;
+    const dy = mouse.y - this.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const force = Math.min(1800 / (dist * dist), 1.2);
+    const dir = mode === 'attract' ? 1 : -1;
+
+    this.vx += (dx / dist) * force * dir;
+    this.vy += (dy / dist) * force * dir;
+
+    // damping
+    this.vx *= 0.96;
+    this.vy *= 0.96;
+
+    // trail
+    this.trail.push({ x: this.x, y: this.y });
+    if (this.trail.length > 8) this.trail.shift();
+
+    this.x += this.vx;
+    this.y += this.vy;
+
+    // wrap
+    if (this.x < 0) this.x = W;
+    if (this.x > W) this.x = 0;
+    if (this.y < 0) this.y = H;
+    if (this.y > H) this.y = 0;
+
+    // dynamic color based on speed
+    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+    this.hue = 200 + Math.min(speed * 10, 140);
+  }
+
+  draw() {
+    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+    const glow = Math.min(speed * 2, 10);
+
+    // trail
+    for (let i = 0; i < this.trail.length; i++) {
+      const a = (i / this.trail.length) * 0.25;
+      ctx.beginPath();
+      ctx.arc(this.trail[i].x, this.trail[i].y, this.size * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${this.hue}, ${this.sat}%, 70%, ${a})`;
+      ctx.fill();
+    }
+
+    // core
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size + glow * 0.15, 0, Math.PI * 2);
+    ctx.fillStyle = `hsl(${this.hue}, ${this.sat}%, 75%)`;
+    ctx.shadowBlur = glow + 4;
+    ctx.shadowColor = `hsl(${this.hue}, 100%, 70%)`;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+// ── Nebula background stars ───────────────────────────────
+const stars = Array.from({ length: 200 }, () => ({
+  x: Math.random() * W,
+  y: Math.random() * H,
+  r: Math.random() * 0.8 + 0.1,
+  a: Math.random() * 0.5 + 0.1
+}));
+
+function drawNebula() {
+  // deep space gradient
+  const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H) * 0.7);
+  grad.addColorStop(0, 'rgba(30, 10, 60, 0.4)');
+  grad.addColorStop(1, 'rgba(2, 1, 10, 0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  for (const s of stars) {
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200,180,255,${s.a})`;
+    ctx.fill();
+  }
+}
+
+// ── Init particles ────────────────────────────────────────
+let particles = [];
+function initParticles(n = 600) {
+  particles = Array.from({ length: n }, () => new Particle());
+}
+initParticles();
+
+// ── Loop ──────────────────────────────────────────────────
+function loop(ts) {
+  requestAnimationFrame(loop);
+
+  // FPS
+  frameCount++;
+  if (ts - lastTime >= 500) {
+    fps = Math.round(frameCount * 1000 / (ts - lastTime));
+    frameCount = 0;
+    lastTime = ts;
+    document.getElementById('fps').textContent = fps;
+  }
+
+  // clear with motion blur
+  ctx.fillStyle = 'rgba(2,1,10,0.18)';
+  ctx.fillRect(0, 0, W, H);
+
+  drawNebula();
+
+  let totalSpeed = 0;
+  for (const p of particles) {
+    p.update();
+    p.draw();
+    totalSpeed += Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+  }
+
+  document.getElementById('particleCount').textContent = particles.length;
+  document.getElementById('velocity').textContent = (totalSpeed / particles.length).toFixed(1);
+
+  // Draw mouse glow
+  const mg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 80);
+  const col = mode === 'attract' ? '167,139,250' : '244,114,182';
+  mg.addColorStop(0, `rgba(${col},0.15)`);
+  mg.addColorStop(1, `rgba(${col},0)`);
+  ctx.fillStyle = mg;
+  ctx.fillRect(0, 0, W, H);
+}
+
+requestAnimationFrame(loop);
+
+// ── Custom cursor ─────────────────────────────────────────
+const cursorEl   = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+
+document.addEventListener('mousemove', e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  cursorEl.style.left   = e.clientX + 'px';
+  cursorEl.style.top    = e.clientY + 'px';
+  cursorRing.style.left = e.clientX + 'px';
+  cursorRing.style.top  = e.clientY + 'px';
+});
+
+// ── Controls ──────────────────────────────────────────────
+document.getElementById('toggleMode').addEventListener('click', () => {
+  mode = mode === 'attract' ? 'repel' : 'attract';
+  document.getElementById('modeText').textContent = mode.toUpperCase();
+  cursorEl.style.background = mode === 'attract' ? 'var(--hot)' : 'var(--cold)';
+  cursorEl.style.boxShadow  = mode === 'attract'
+    ? '0 0 12px var(--hot), 0 0 24px rgba(244,114,182,0.4)'
+    : '0 0 12px var(--cold), 0 0 24px rgba(56,189,248,0.4)';
+});
+
+document.getElementById('explode').addEventListener('click', () => {
+  for (const p of particles) {
+    const angle = Math.random() * Math.PI * 2;
+    const strength = Math.random() * 15 + 5;
+    p.vx = Math.cos(angle) * strength;
+    p.vy = Math.sin(angle) * strength;
+  }
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  initParticles();
+});
+
+window.addEventListener('resize', () => {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+});
+
+// ── Click: burst new particles ────────────────────────────
+canvas.addEventListener('click', e => {
+  const burst = 30;
+  for (let i = 0; i < burst; i++) {
+    const angle = (i / burst) * Math.PI * 2;
+    const speed = Math.random() * 4 + 2;
+    particles.push(new Particle(
+      e.clientX, e.clientY,
+      Math.cos(angle) * speed,
+      Math.sin(angle) * speed
+    ));
+  }
+  if (particles.length > 1000) particles.splice(0, 30);
+});
+</script>
+</body>
+</html>
