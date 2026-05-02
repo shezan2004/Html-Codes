@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>System Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f1117;
+      color: #e2e8f0;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 0.5px solid #2d3748;
+    }
+
+    .title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #e2e8f0;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #718096;
+    }
+
+    .dot-live {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #48bb78;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Metric Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .card {
+      background: #1a1f2e;
+      border: 0.5px solid #2d3748;
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .card-label {
+      font-size: 10px;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .card-val {
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .card-sub {
+      font-size: 11px;
+      color: #4a5568;
+      margin-top: 6px;
+    }
+
+    .ok   { color: #48bb78; }
+    .warn { color: #ed8936; }
+    .crit { color: #fc8181; }
+
+    /* Gauge bars */
+    .gauges {
+      background: #1a1f2e;
+      border: 0.5px solid #2d3748;
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .gauge-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .g-label {
+      font-size: 12px;
+      color: #a0aec0;
+      width: 60px;
+    }
+
+    .g-track {
+      flex: 1;
+      height: 8px;
+      background: #2d3748;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .g-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+
+    .g-val {
+      font-size: 12px;
+      color: #e2e8f0;
+      width: 42px;
+      text-align: right;
+    }
+
+    .timestamp {
+      font-size: 11px;
+      color: #4a5568;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="top">
+    <span class="title">SYSTEM OVERVIEW</span>
+    <div class="live-badge">
+      <span class="dot-live"></span>
+      <span id="ts">--</span>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">CPU</div>
+      <div class="card-val ok" id="cpu">--</div>
+      <div class="card-sub">utilization</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Memory</div>
+      <div class="card-val ok" id="mem">--</div>
+      <div class="card-sub">of 16 GB</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Disk</div>
+      <div class="card-val ok" id="disk">--</div>
+      <div class="card-sub">of 512 GB</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Uptime</div>
+      <div class="card-val ok" id="uptime">14</div>
+      <div class="card-sub">days</div>
+    </div>
+  </div>
+
+  <div class="gauges">
+    <div class="gauge-row">
+      <span class="g-label">CPU</span>
+      <div class="g-track"><div class="g-fill" id="g-cpu" style="background:#4299e1;"></div></div>
+      <span class="g-val" id="gv-cpu">--</span>
+    </div>
+    <div class="gauge-row">
+      <span class="g-label">Memory</span>
+      <div class="g-track"><div class="g-fill" id="g-mem" style="background:#48bb78;"></div></div>
+      <span class="g-val" id="gv-mem">--</span>
+    </div>
+    <div class="gauge-row">
+      <span class="g-label">Disk</span>
+      <div class="g-track"><div class="g-fill" id="g-disk" style="background:#ed8936;"></div></div>
+      <span class="g-val" id="gv-disk">--</span>
+    </div>
+    <div class="gauge-row">
+      <span class="g-label">Network</span>
+      <div class="g-track"><div class="g-fill" id="g-net" style="background:#9f7aea;"></div></div>
+      <span class="g-val" id="gv-net">--</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let cpu = 60, mem = 55, disk = 72, net = 40;
+
+  function rand(base, range) {
+    return Math.min(99, Math.max(1, Math.round(base + (Math.random() - 0.5) * range)));
+  }
+
+  function colorClass(v) {
+    return v > 85 ? 'crit' : v > 70 ? 'warn' : 'ok';
+  }
+
+  function tick() {
+    cpu  = rand(cpu,  10);
+    mem  = rand(mem,  6);
+    disk = rand(disk, 2);
+    net  = rand(net,  14);
+
+    const cpuEl = document.getElementById('cpu');
+    cpuEl.textContent = cpu + '%';
+    cpuEl.className = 'card-val ' + colorClass(cpu);
+
+    const memEl = document.getElementById('mem');
+    memEl.textContent = (mem / 100 * 16).toFixed(1) + 'G';
+    memEl.className = 'card-val ' + colorClass(mem);
+
+    const diskEl = document.getElementById('disk');
+    diskEl.textContent = Math.round(disk / 100 * 512) + 'G';
+    diskEl.className = 'card-val ' + colorClass(disk);
+
+    [['cpu', cpu], ['mem', mem], ['disk', disk], ['net', net]].forEach(([k, v]) => {
+      document.getElementById('g-' + k).style.width = v + '%';
+      document.getElementById('gv-' + k).textContent = v + '%';
+    });
+
+    document.getElementById('ts').textContent = new Date().toLocaleTimeString();
+  }
+
+  tick();
+  setInterval(tick, 2000);
+</script>
+
+</body>
+</html>
