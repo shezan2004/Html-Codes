@@ -1,0 +1,273 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+  .puzzle-wrap {
+    font-family: 'Syne', sans-serif;
+    min-height: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .puzzle-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .puzzle-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    letter-spacing: -1px;
+  }
+
+  .puzzle-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+
+  .stat-val {
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 80px);
+    grid-template-rows: repeat(4, 80px);
+    gap: 6px;
+    background: var(--color-background-secondary);
+    padding: 10px;
+    border-radius: 16px;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .tile {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s;
+    user-select: none;
+    border: 1.5px solid var(--color-border-secondary);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    letter-spacing: -1px;
+  }
+
+  .tile:hover:not(.empty):not(.correct) {
+    transform: scale(0.96);
+    background: var(--color-background-secondary);
+  }
+
+  .tile.empty {
+    background: transparent;
+    border: 1.5px dashed var(--color-border-tertiary);
+    cursor: default;
+  }
+
+  .tile.correct {
+    background: #1D9E75;
+    border-color: #0F6E56;
+    color: #E1F5EE;
+    cursor: default;
+  }
+
+  .tile.movable {
+    border-color: #378ADD;
+    color: #185FA5;
+    background: #E6F1FB;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 9px 22px;
+    border-radius: 8px;
+    border: 1.5px solid var(--color-border-secondary);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background 0.12s, transform 0.08s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn:hover { background: var(--color-background-secondary); }
+  .btn:active { transform: scale(0.97); }
+  .btn.primary {
+    background: #1D9E75;
+    border-color: #0F6E56;
+    color: #E1F5EE;
+  }
+  .btn.primary:hover { background: #0F6E56; }
+
+  .win-msg {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1D9E75;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: -0.5px;
+    animation: pop 0.4s ease;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.7); opacity: 0; }
+    80% { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .hint-text {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-family: 'Space Mono', monospace;
+    text-align: center;
+  }
+</style>
+
+<div class="puzzle-wrap">
+  <div>
+    <div class="puzzle-header">
+      <span class="puzzle-title">15 Puzzle</span>
+      <span class="puzzle-subtitle">slide to order</span>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <span>Moves: <span class="stat-val" id="moves">0</span></span>
+    <span>Time: <span class="stat-val" id="timer">0:00</span></span>
+    <span>Best: <span class="stat-val" id="best">—</span></span>
+  </div>
+
+  <div class="board" id="board"></div>
+
+  <div id="win-msg" class="win-msg" style="display:none;">Solved! 🎉</div>
+
+  <div class="btn-row">
+    <button class="btn primary" onclick="shuffle()">Shuffle</button>
+    <button class="btn" onclick="solve()">Hint ↗</button>
+  </div>
+
+  <div class="hint-text">Click tiles adjacent to the blank space to slide them.</div>
+</div>
+
+<script>
+const SIZE = 4;
+let tiles = [], emptyIdx = 15, moves = 0, seconds = 0, timerInterval = null, won = false, bestTime = null;
+
+function goal() { return Array.from({length:16},(_,i)=>i===15?0:i+1); }
+
+function isSolvable(arr) {
+  let inv = 0;
+  const a = arr.filter(x=>x!==0);
+  for(let i=0;i<a.length;i++) for(let j=i+1;j<a.length;j++) if(a[i]>a[j]) inv++;
+  const row = Math.floor(arr.indexOf(0)/SIZE);
+  const fromBottom = SIZE - row;
+  return (fromBottom%2===0) ? (inv%2!==0) : (inv%2===0);
+}
+
+function shuffle() {
+  won = false;
+  document.getElementById('win-msg').style.display = 'none';
+  moves = 0;
+  seconds = 0;
+  clearInterval(timerInterval);
+  updateStats();
+
+  do {
+    tiles = Array.from({length:16},(_,i)=>i===15?0:i+1);
+    for(let i=15;i>0;i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [tiles[i],tiles[j]] = [tiles[j],tiles[i]];
+    }
+  } while(!isSolvable(tiles) || tiles.join('')===goal().join(''));
+
+  emptyIdx = tiles.indexOf(0);
+  render();
+  timerInterval = setInterval(()=>{ seconds++; updateStats(); }, 1000);
+}
+
+function render() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  const goal16 = goal();
+  tiles.forEach((val, idx) => {
+    const div = document.createElement('div');
+    div.className = 'tile';
+    if(val === 0) {
+      div.classList.add('empty');
+    } else {
+      div.textContent = val;
+      if(val === goal16[idx]) div.classList.add('correct');
+      else if(canMove(idx)) div.classList.add('movable');
+      div.onclick = () => tryMove(idx);
+    }
+    board.appendChild(div);
+  });
+}
+
+function canMove(idx) {
+  const r = Math.floor(idx/SIZE), c = idx%SIZE;
+  const er = Math.floor(emptyIdx/SIZE), ec = emptyIdx%SIZE;
+  return (r===er && Math.abs(c-ec)===1) || (c===ec && Math.abs(r-er)===1);
+}
+
+function tryMove(idx) {
+  if(won || !canMove(idx)) return;
+  [tiles[idx], tiles[emptyIdx]] = [tiles[emptyIdx], tiles[idx]];
+  emptyIdx = idx;
+  moves++;
+  render();
+  updateStats();
+  checkWin();
+}
+
+function checkWin() {
+  if(tiles.join('') === goal().join('')) {
+    won = true;
+    clearInterval(timerInterval);
+    document.getElementById('win-msg').style.display = 'block';
+    if(bestTime === null || seconds < bestTime) {
+      bestTime = seconds;
+      const m = Math.floor(bestTime/60), s = bestTime%60;
+      document.getElementById('best').textContent = m+':'+(s<10?'0':'')+s;
+    }
+  }
+}
+
+function updateStats() {
+  document.getElementById('moves').textContent = moves;
+  const m = Math.floor(seconds/60), s = seconds%60;
+  document.getElementById('timer').textContent = m+':'+(s<10?'0':'')+s;
+}
+
+function solve() {
+  sendPrompt('Give me a tip for solving the 15 puzzle faster');
+}
+
+shuffle();
+</script>
