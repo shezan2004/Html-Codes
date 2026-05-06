@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Rajdhani',sans-serif;background:#111;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+  #hub{display:flex;gap:8px;padding:12px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+  .tab{padding:8px 18px;border:1.5px solid #444;background:#1a1a2e;color:#888;cursor:pointer;border-radius:6px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;transition:all .2s}
+  .tab.active{background:#1a1a2e;color:#00ffd5;border-color:#00ffd5}
+  .game{display:none;padding:12px}
+  .game.active{display:block}
+
+  /* SNAKE */
+  #snakeWrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+  #snakeCanvas{background:#0d0d0d;border:2px solid #00ffd5;border-radius:4px;image-rendering:pixelated}
+  #snakeScore{font-family:'Press Start 2P',monospace;font-size:11px;color:#00ffd5}
+  #snakeMsg{font-family:'Press Start 2P',monospace;font-size:10px;color:#ff4466;min-height:16px;text-align:center}
+  .dpad{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(2,40px);gap:4px;margin-top:4px}
+  .dpad button{width:40px;height:40px;background:#1a1a2e;border:1.5px solid #00ffd5;color:#00ffd5;font-size:18px;cursor:pointer;border-radius:4px;line-height:1}
+
+  /* BREAKOUT */
+  #brkWrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+  #brkCanvas{background:#0a0010;border:2px solid #c84bff;border-radius:4px}
+  #brkScore{font-family:'Press Start 2P',monospace;font-size:11px;color:#c84bff}
+  #brkMsg{font-family:'Press Start 2P',monospace;font-size:10px;color:#ff4466;min-height:16px;text-align:center}
+
+  /* MEMORY */
+  #memWrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+  #memInfo{font-family:'Press Start 2P',monospace;font-size:10px;color:#ffbb33;display:flex;gap:20px}
+  #memGrid{display:grid;grid-template-columns:repeat(4,70px);gap:8px}
+  .card{width:70px;height:70px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s}
+  .card.flipped{transform:rotateY(180deg)}
+  .card-face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:6px;backface-visibility:hidden;font-size:28px;border:2px solid transparent}
+  .card-back{background:#1c1c3a;border-color:#ffbb33}
+  .card-back::after{content:'?';font-family:'Press Start 2P',monospace;font-size:14px;color:#ffbb33}
+  .card-front{transform:rotateY(180deg);background:#0a0010;border-color:#ffbb33}
+  #memMsg{font-family:'Press Start 2P',monospace;font-size:10px;color:#ff4466;min-height:16px}
+  button.reset{font-family:'Rajdhani',sans-serif;font-weight:600;padding:6px 18px;background:#1a1a2e;border:1.5px solid;border-radius:5px;cursor:pointer;font-size:13px;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<div id="hub">
+  <button class="tab active" onclick="switchGame('snake', this)">SNAKE</button>
+  <button class="tab" onclick="switchGame('brk', this)">BREAKOUT</button>
+  <button class="tab" onclick="switchGame('mem', this)">MEMORY</button>
+</div>
+
+<!-- SNAKE -->
+<div id="snake" class="game active">
+  <div id="snakeWrap">
+    <div id="snakeScore">SCORE: 0</div>
+    <canvas id="snakeCanvas" width="300" height="300"></canvas>
+    <div id="snakeMsg">Press any arrow key to start</div>
+    <div class="dpad">
+      <div></div><button onclick="snakeDir(0,-1)">▲</button><div></div>
+      <button onclick="snakeDir(-1,0)">◀</button>
+      <button onclick="snakeDir(0,1)">▼</button>
+      <button onclick="snakeDir(1,0)">▶</button>
+    </div>
+    <button class="reset" style="color:#00ffd5;border-color:#00ffd5;margin-top:4px" onclick="initSnake()">RESTART</button>
+  </div>
+</div>
+
+<!-- BREAKOUT -->
+<div id="brk" class="game">
+  <div id="brkWrap">
+    <div id="brkScore">SCORE: 0</div>
+    <canvas id="brkCanvas" width="360" height="300"></canvas>
+    <div id="brkMsg">Click canvas to start | Move mouse to aim</div>
+    <button class="reset" style="color:#c84bff;border-color:#c84bff;margin-top:4px" onclick="initBrk()">RESTART</button>
+  </div>
+</div>
+
+<!-- MEMORY -->
+<div id="mem" class="game">
+  <div id="memWrap">
+    <div id="memInfo">
+      <span>MOVES: <span id="memMoves">0</span></span>
+      <span>PAIRS: <span id="memPairs">0</span>/8</span>
+    </div>
+    <div id="memGrid"></div>
+    <div id="memMsg"></div>
+    <button class="reset" style="color:#ffbb33;border-color:#ffbb33" onclick="initMem()">NEW GAME</button>
+  </div>
+</div>
+
+<script>
+function switchGame(id, btn) {
+  document.querySelectorAll('.game').forEach(g => g.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ===== SNAKE ===== */
+let sc, sctx, snake, food, dir, nextDir, score, alive, sLoop;
+function initSnake() {
+  sc = document.getElementById('snakeCanvas');
+  sctx = sc.getContext('2d');
+  snake = [{x:15,y:15},{x:14,y:15},{x:13,y:15}];
+  dir = {x:0,y:0}; nextDir = {x:0,y:0};
+  score = 0; alive = true;
+  document.getElementById('snakeScore').textContent = 'SCORE: 0';
+  document.getElementById('snakeMsg').textContent = 'Press any arrow key to start';
+  placeFood();
+  clearInterval(sLoop);
+  drawSnake();
+}
+function placeFood() {
+  food = {x: Math.floor(Math.random()*20), y: Math.floor(Math.random()*20)};
+}
+function snakeDir(dx, dy) {
+  if (dx !== 0 && dir.x !== 0) return;
+  if (dy !== 0 && dir.y !== 0) return;
+  nextDir = {x: dx, y: dy};
+  if (dir.x === 0 && dir.y === 0) {
+    dir = {x: dx, y: dy};
+    clearInterval(sLoop);
+    sLoop = setInterval(stepSnake, 120);
+    document.getElementById('snakeMsg').textContent = '';
+  }
+}
+document.addEventListener('keydown', e => {
+  const map = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]};
+  if (map[e.key]) { e.preventDefault(); snakeDir(...map[e.key]); }
+});
+function stepSnake() {
+  if (!alive) return;
+  dir = (nextDir.x || nextDir.y) ? {...nextDir} : dir;
+  if (!dir.x && !dir.y) return;
+  const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+  if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(s => s.x === head.x && s.y === head.y)) {
+    alive = false; clearInterval(sLoop);
+    document.getElementById('snakeMsg').textContent = 'GAME OVER!'; return;
+  }
+  snake.unshift(head);
+  if (head.x === food.x && head.y === food.y) {
+    score += 10;
+    document.getElementById('snakeScore').textContent = 'SCORE: ' + score;
+    placeFood();
+  } else snake.pop();
+  drawSnake();
+}
+function drawSnake() {
+  const S = 15;
+  sctx.fillStyle = '#0d0d0d'; sctx.fillRect(0,0,300,300);
+  sctx.fillStyle = '#ff4466';
+  sctx.fillRect(food.x*S+1, food.y*S+1, S-2, S-2);
+  snake.forEach((s, i) => {
+    sctx.fillStyle = i === 0 ? '#00ffd5' : '#00aa90';
+    sctx.fillRect(s.x*S+1, s.y*S+1, S-2, S-2);
+  });
+}
+initSnake();
+
+/* ===== BREAKOUT ===== */
+let bc, bctx, ball, paddle, bricks, bScore, bAlive, bRunning, bAnim;
+function initBrk() {
+  bc = document.getElementById('brkCanvas');
+  bctx = bc.getContext('2d');
+  bScore = 0; bAlive = true; bRunning = false;
+  document.getElementById('brkScore').textContent = 'SCORE: 0';
+  document.getElementById('brkMsg').textContent = 'Click canvas to start | Move mouse to aim';
+  paddle = {x:130, w:80, y:270, h:10};
+  ball = {x:180, y:250, vx:3, vy:-3.5, r:7};
+  bricks = [];
+  const cols = ['#ff4466','#ff8800','#ffdd00','#00ffd5','#c84bff'];
+  for (let r = 0; r < 5; r++)
+    for (let c = 0; c < 9; c++)
+      bricks.push({x:8+c*38, y:28+r*26, w:32, h:18, alive:true, col:cols[r]});
+  cancelAnimationFrame(bAnim);
+  drawBrk();
+}
+function setupBrkEvents() {
+  const canvas = document.getElementById('brkCanvas');
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    paddle.x = Math.max(0, Math.min(360 - paddle.w, e.clientX - rect.left - paddle.w/2));
+  });
+  canvas.addEventListener('click', () => {
+    if (!bRunning && bAlive) { bRunning = true; document.getElementById('brkMsg').textContent = ''; brkLoop(); }
+  });
+}
+function brkLoop() {
+  if (!bAlive || !bRunning) { drawBrk(); return; }
+  ball.x += ball.vx; ball.y += ball.vy;
+  if (ball.x - ball.r < 0 || ball.x + ball.r > 360) ball.vx *= -1;
+  if (ball.y - ball.r < 0) ball.vy *= -1;
+  if (ball.y + ball.r > 300) { bAlive = false; document.getElementById('brkMsg').textContent = 'GAME OVER!'; drawBrk(); return; }
+  if (ball.y + ball.r >= paddle.y && ball.y + ball.r <= paddle.y + paddle.h + 5 && ball.x >= paddle.x && ball.x <= paddle.x + paddle.w) {
+    ball.vy = Math.abs(ball.vy) * -1;
+    ball.vx += (ball.x - (paddle.x + paddle.w/2)) * 0.08;
+  }
+  bricks.forEach(b => {
+    if (!b.alive) return;
+    if (ball.x+ball.r > b.x && ball.x-ball.r < b.x+b.w && ball.y+ball.r > b.y && ball.y-ball.r < b.y+b.h) {
+      b.alive = false; ball.vy *= -1; bScore += 5;
+      document.getElementById('brkScore').textContent = 'SCORE: ' + bScore;
+    }
+  });
+  if (bricks.every(b => !b.alive)) { bAlive = false; document.getElementById('brkMsg').textContent = 'YOU WIN!'; drawBrk(); return; }
+  drawBrk();
+  bAnim = requestAnimationFrame(brkLoop);
+}
+function drawBrk() {
+  bctx.fillStyle = '#0a0010'; bctx.fillRect(0,0,360,300);
+  bricks.forEach(b => {
+    if (!b.alive) return;
+    bctx.fillStyle = b.col; bctx.fillRect(b.x, b.y, b.w, b.h);
+  });
+  bctx.fillStyle = '#c84bff'; bctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+  bctx.beginPath(); bctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
+  bctx.fillStyle = '#ffffff'; bctx.fill();
+}
+initBrk();
+setupBrkEvents();
+
+/* ===== MEMORY ===== */
+const EMOJIS = ['🐉','🦊','🐙','🦋','🐸','🦁','🐧','🦄'];
+let mFlipped = [], mLocked = false, mMoves = 0, mPairs = 0;
+function initMem() {
+  mFlipped = []; mLocked = false; mMoves = 0; mPairs = 0;
+  document.getElementById('memMoves').textContent = 0;
+  document.getElementById('memPairs').textContent = 0;
+  document.getElementById('memMsg').textContent = '';
+  const cards = [...EMOJIS, ...EMOJIS].sort(() => Math.random() - .5);
+  const grid = document.getElementById('memGrid');
+  grid.innerHTML = '';
+  cards.forEach((em, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.em = em;
+    card.dataset.idx = i;
+    card.innerHTML = `<div class="card-face card-back"></div><div class="card-face card-front">${em}</div>`;
+    card.addEventListener('click', () => flipCard(card));
+    grid.appendChild(card);
+  });
+}
+function flipCard(card) {
+  if (mLocked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+  card.classList.add('flipped');
+  mFlipped.push(card);
+  if (mFlipped.length === 2) {
+    mLocked = true; mMoves++;
+    document.getElementById('memMoves').textContent = mMoves;
+    if (mFlipped[0].dataset.em === mFlipped[1].dataset.em) {
+      mFlipped.forEach(c => c.classList.add('matched'));
+      mFlipped = []; mLocked = false; mPairs++;
+      document.getElementById('memPairs').textContent = mPairs;
+      if (mPairs === 8) document.getElementById('memMsg').textContent = 'YOU WIN in ' + mMoves + ' moves!';
+    } else {
+      setTimeout(() => {
+        mFlipped.forEach(c => c.classList.remove('flipped'));
+        mFlipped = []; mLocked = false;
+      }, 900);
+    }
+  }
+}
+initMem();
+</script>
+</body>
+</html>

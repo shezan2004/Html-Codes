@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperMart | Online Supermarket</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="navbar">
+            <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+            <div class="logo">Super<span>Mart</span> 🛒</div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search for organic kale, milk, berries...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="nav-actions">
+                <div class="cart-container" onclick="toggleCart()">
+                    <span class="icon">🛒</span>
+                    <span id="cartCount" class="badge">0</span>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="category-bar" style="display: none;">
+            <button class="cat-btn active" onclick="filterProducts('all', this)">All</button>
+            <button class="cat-btn" onclick="filterProducts('fruit', this)">🍌 Fruits</button>
+            <button class="cat-btn" onclick="filterProducts('veggie', this)">🥬 Vegetables</button>
+            <button class="cat-btn" onclick="filterProducts('dairy', this)">🥛 Dairy</button>
+            <button class="cat-btn" onclick="filterProducts('bakery', this)">🍞 Bakery</button>
+            <button class="cat-btn" onclick="filterProducts('baby', this)">👶 Baby</button>
+            <button class="cat-btn" onclick="filterProducts('cleaning', this)">🧹 Cleaning</button>
+            <button class="cat-btn" onclick="filterProducts('pet', this)">🐕 Pet Care</button>
+            <button class="cat-btn" onclick="filterProducts('beauty', this)">💄 Beauty</button>
+            <button class="cat-btn" onclick="filterProducts('fashion', this)">👕 Fashion</button>
+            <button class="cat-btn" onclick="filterProducts('home', this)">🏠 Home</button>
+            <button class="cat-btn" onclick="filterProducts('stationary', this)">📓 Stationary</button>
+            <button class="cat-btn" onclick="filterProducts('toys', this)">🎮 Toys</button>
+            <button class="cat-btn" onclick="filterProducts('gadgets', this)">📱 Gadgets</button>
+        </div>
+    </header>
+
+    <div class="hero-banner">
+        <div class="hero-content">
+            <h1>🎉 Welcome to SuperMart!</h1>
+            <p>Your One-Stop Online Supermarket</p>
+            <div class="promo-code">Use Code: WELCOME for 5% OFF on First Order!</div>
+            <div class="hero-features">
+                <div class="feature-badge">✓ Free Shipping on Orders $50+</div>
+                <div class="feature-badge">✓ Fresh Quality Guaranteed</div>
+                <div class="feature-badge">✓ 24/7 Customer Support</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Toggle Sidebar Menu -->
+    <aside id="filterSidebar" class="filter-sidebar">
+        <div class="sidebar-header">
+            <h3>🏷️ Filters & Categories</h3>
+            <button class="close-sidebar-btn" onclick="closeSidebar()">✕</button>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="sidebar-section">
+                <button class="sidebar-btn active" onclick="filterProducts('all', this); closeSidebar();"><span>📦</span> All Products</button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-group-title">🛒 Groceries</div>
+                <button class="sidebar-btn" onclick="filterProducts('fruit', this); closeSidebar();"><span>🍌</span> Fruits</button>
+                <button class="sidebar-btn" onclick="filterProducts('veggie', this); closeSidebar();"><span>🥬</span> Vegetables</button>
+                <button class="sidebar-btn" onclick="filterProducts('dairy', this); closeSidebar();"><span>🥛</span> Dairy & Eggs</button>
+                <button class="sidebar-btn" onclick="filterProducts('bakery', this); closeSidebar();"><span>🍞</span> Bakery</button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-group-title">👶 Home & Living</div>
+                <button class="sidebar-btn" onclick="filterProducts('baby', this); closeSidebar();"><span>👶</span> Baby Care</button>
+                <button class="sidebar-btn" onclick="filterProducts('cleaning', this); closeSidebar();"><span>🧹</span> Cleaning</button>
+                <button class="sidebar-btn" onclick="filterProducts('home', this); closeSidebar();"><span>🏠</span> Home & Kitchen</button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-group-title">🐾 Pets & Lifestyle</div>
+                <button class="sidebar-btn" onclick="filterProducts('pet', this); closeSidebar();"><span>🐕</span> Pet Care</button>
+                <button class="sidebar-btn" onclick="filterProducts('fashion', this); closeSidebar();"><span>👕</span> Fashion</button>
+                <button class="sidebar-btn" onclick="filterProducts('beauty', this); closeSidebar();"><span>💄</span> Beauty & Health</button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-group-title">📚 Office & Recreation</div>
+                <button class="sidebar-btn" onclick="filterProducts('stationary', this); closeSidebar();"><span>📓</span> Stationary</button>
+                <button class="sidebar-btn" onclick="filterProducts('toys', this); closeSidebar();"><span>🎮</span> Toys & Sports</button>
+                <button class="sidebar-btn" onclick="filterProducts('gadgets', this); closeSidebar();"><span>📱</span> Gadgets</button>
+            </div>
+
+            <div class="sidebar-section" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                <div class="sidebar-group-title">💰 Price Range</div>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.8rem; color: var(--gray);">Min</label>
+                        <input type="number" min="0" max="200" value="0" id="minPrice" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.8rem; color: var(--gray);">Max</label>
+                        <input type="number" min="0" max="200" value="200" id="maxPrice" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
+                    </div>
+                </div>
+                <input type="range" min="0" max="200" value="200" style="width: 100%; margin: 10px 0;" id="priceRange">
+                <p style="text-align: center; color: var(--gray); font-size: 0.9rem; margin: 0;">$<span id="priceMin">0</span> - $<span id="priceMax">200</span></p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section id="productGrid" class="product-grid">
+        </section>
+    </main>
+
+    <aside id="cartSidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Basket</h2>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div id="cartItems" class="cart-items">
+            </div>
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Subtotal:</span>
+                <span id="cartTotal">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </aside>
+
+    <div id="toast" class="toast">Added to cart!</div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About SuperMart</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Track Order</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Categories</h3>
+                <ul>
+                    <li><a href="#">Fresh Produce</a></li>
+                    <li><a href="#">Dairy & Eggs</a></li>
+                    <li><a href="#">Beauty & Health</a></li>
+                    <li><a href="#">Home & Kitchen</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <ul>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Newsletter</a></li>
+                    <li><a href="#">Mobile App</a></li>
+                    <li><a href="#">Loyalty Program</a></li>
+                </ul>
+                <div class="social-links">
+                    <a href="#" title="Facebook">f</a>
+                    <a href="#" title="Twitter">𝕏</a>
+                    <a href="#" title="Instagram">📷</a>
+                    <a href="#" title="LinkedIn">in</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SuperMart. All rights reserved. | <a href="#" style="color: #bdc3c7;">Privacy Policy</a> | <a href="#" style="color: #bdc3c7;">Terms & Conditions</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
