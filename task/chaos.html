@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; }
+  canvas { display: block; }
+  #glitch {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Courier New', monospace;
+    font-size: 72px;
+    font-weight: 900;
+    color: #0f0;
+    pointer-events: none;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    mix-blend-mode: screen;
+    animation: glitch 0.15s infinite;
+    user-select: none;
+  }
+  @keyframes glitch {
+    0%   { text-shadow: 3px 0 #f00, -3px 0 #0ff; transform: translate(-50%,-50%) skewX(0deg); }
+    20%  { text-shadow: -4px 0 #f00, 4px 0 #0ff; transform: translate(-48%,-50%) skewX(2deg); }
+    40%  { text-shadow: 4px 2px #f0f, -4px -2px #0f0; transform: translate(-52%,-50%) skewX(-1deg); }
+    60%  { text-shadow: -3px 0 #ff0, 3px 0 #f00; transform: translate(-50%,-52%) skewX(0deg); }
+    80%  { text-shadow: 5px 0 #0ff, -5px 0 #f0f; transform: translate(-50%,-48%) skewX(3deg); }
+    100% { text-shadow: -2px 0 #0f0, 2px 0 #f00; transform: translate(-50%,-50%) skewX(0deg); }
+  }
+  #scanlines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+    pointer-events: none;
+    animation: scan 8s linear infinite;
+  }
+  @keyframes scan {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="glitch">CHAOS</div>
+<div id="scanlines"></div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H, entities = [], frame = 0;
+let mouse = { x: 0, y: 0 };
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  mouse.x = W / 2; mouse.y = H / 2;
+}
+
+const neonPalette = [
+  '#ff0040','#ff6600','#ffee00','#00ff88','#00ffff','#0088ff','#aa00ff','#ff00aa',
+  '#ff3300','#ccff00','#00ffdd','#ff0099','#ff9900','#33ff00'
+];
+
+class Bolt {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    const angle = Math.random() * Math.PI * 2;
+    const spd = Math.random() * 12 + 4;
+    this.vx = Math.cos(angle) * spd;
+    this.vy = Math.sin(angle) * spd;
+    this.color = neonPalette[Math.floor(Math.random() * neonPalette.length)];
+    this.r = Math.random() * 4 + 1;
+    this.life = 1;
+    this.decay = Math.random() * 0.02 + 0.005;
+    this.trail = [];
+    this.maxTrail = Math.floor(Math.random() * 20) + 8;
+    this.wobble = Math.random() * 0.4;
+    this.spin = (Math.random() - 0.5) * 0.3;
+    this.shape = Math.floor(Math.random() * 3);
+  }
+
+  update() {
+    this.trail.push({ x: this.x, y: this.y });
+    if (this.trail.length > this.maxTrail) this.trail.shift();
+
+    const dx = mouse.x - this.x;
+    const dy = mouse.y - this.y;
+    const dist = Math.sqrt(dx*dx+dy*dy)+1;
+    const repel = frame % 120 < 60;
+    const force = repel ? -20 / (dist+1) : 30 / (dist+1);
+    this.vx += (dx/dist)*force*0.02 + (Math.random()-0.5)*this.wobble;
+    this.vy += (dy/dist)*force*0.02 + (Math.random()-0.5)*this.wobble;
+
+    const spd = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+    const maxSpd = 18;
+    if (spd > maxSpd) { this.vx=(this.vx/spd)*maxSpd; this.vy=(this.vy/spd)*maxSpd; }
+
+    this.x += this.vx; this.y += this.vy;
+    this.vx *= 0.97; this.vy *= 0.97;
+    this.life -= this.decay;
+    this.spin += (Math.random()-0.5)*0.05;
+
+    if (this.x<-50||this.x>W+50||this.y<-50||this.y>H+50) this.life = 0;
+  }
+
+  draw() {
+    if (this.trail.length > 1) {
+      for (let i = 1; i < this.trail.length; i++) {
+        const t = i / this.trail.length;
+        ctx.beginPath();
+        ctx.moveTo(this.trail[i-1].x, this.trail[i-1].y);
+        ctx.lineTo(this.trail[i].x, this.trail[i].y);
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = this.r * t * 2;
+        ctx.globalAlpha = t * this.life * 0.8;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+      }
+    }
+
+    ctx.globalAlpha = this.life;
+    ctx.shadowColor = this.color;
+    ctx.shadowBlur = 20;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+
+    if (this.shape === 0) {
+      ctx.arc(this.x, this.y, this.r * 2, 0, Math.PI*2);
+    } else if (this.shape === 1) {
+      const s = this.r * 3;
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.spin * frame);
+      ctx.rect(-s/2, -s/2, s, s);
+      ctx.restore();
+    } else {
+      const s = this.r * 3;
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.spin * frame);
+      ctx.moveTo(0, -s);
+      ctx.lineTo(s*0.866, s*0.5);
+      ctx.lineTo(-s*0.866, s*0.5);
+      ctx.closePath();
+      ctx.restore();
+    }
+
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+  }
+}
+
+class ZapLine {
+  constructor() {
+    this.x1 = Math.random()*W; this.y1 = Math.random()*H;
+    this.x2 = Math.random()*W; this.y2 = Math.random()*H;
+    this.color = neonPalette[Math.floor(Math.random()*neonPalette.length)];
+    this.life = 1;
+    this.decay = 0.06 + Math.random()*0.1;
+    this.segments = Math.floor(Math.random()*6)+3;
+  }
+  update() { this.life -= this.decay; }
+  draw() {
+    ctx.globalAlpha = this.life * 0.9;
+    ctx.strokeStyle = this.color;
+    ctx.shadowColor = this.color;
+    ctx.shadowBlur = 15;
+    ctx.lineWidth = Math.random()*2+0.5;
+    ctx.beginPath();
+    ctx.moveTo(this.x1, this.y1);
+    for (let i = 0; i < this.segments; i++) {
+      const t = (i+1)/(this.segments+1);
+      const mx = this.x1+(this.x2-this.x1)*t + (Math.random()-0.5)*80;
+      const my = this.y1+(this.y2-this.y1)*t + (Math.random()-0.5)*80;
+      ctx.lineTo(mx, my);
+    }
+    ctx.lineTo(this.x2, this.y2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+  }
+}
+
+let zaps = [];
+
+function spawnZap() {
+  if (Math.random() < 0.15) zaps.push(new ZapLine());
+}
+
+function init() {
+  entities = [];
+  for (let i = 0; i < 300; i++) entities.push(new Bolt());
+}
+
+function glitchScreen() {
+  if (Math.random() < 0.04) {
+    const sliceH = Math.random()*40+10;
+    const sliceY = Math.random()*H;
+    const shift = (Math.random()-0.5)*60;
+    const imgData = ctx.getImageData(0, sliceY, W, sliceH);
+    ctx.putImageData(imgData, shift, sliceY);
+  }
+}
+
+function animate() {
+  frame++;
+  ctx.fillStyle = `rgba(0,0,0,${0.12 + Math.random()*0.04})`;
+  ctx.fillRect(0, 0, W, H);
+
+  if (frame % 3 === 0) spawnZap();
+  zaps = zaps.filter(z => z.life > 0);
+  zaps.forEach(z => { z.update(); z.draw(); });
+
+  ctx.globalCompositeOperation = 'screen';
+  entities = entities.filter(e => e.life > 0);
+  while (entities.length < 280) entities.push(new Bolt());
+  entities.forEach(e => { e.update(); e.draw(); });
+  ctx.globalCompositeOperation = 'source-over';
+
+  if (frame % 2 === 0) glitchScreen();
+
+  if (frame % 90 < 3) {
+    ctx.fillStyle = `rgba(${Math.random()*255|0},${Math.random()*255|0},${Math.random()*255|0},0.03)`;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+ca
