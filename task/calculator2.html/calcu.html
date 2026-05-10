@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Event Listener Calculator</title>
+    <style>
+        /* CSS stays in the <style> tag */
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f2f5;
+        }
+
+        .calculator {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 12px;
+            width: 320px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        #display {
+            background-color: #fff;
+            height: 60px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 15px;
+            font-size: 2rem;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 18px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #ebebeb;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn:active { transform: scale(0.95); }
+        .col-2 { grid-column: span 2; }
+        .row-2 { grid-row: span 2; }
+        .red { background-color: #ff5252; color: white; }
+        .orange { background-color: #ff9f0a; color: white; }
+        .green { background-color: #34c759; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <div id="display">0</div>
+
+        <div class="button-grid">
+            <button class="btn col-2 red" data-val="C">C</button>
+            <button class="btn orange" data-val="/">/</button>
+            <button class="btn orange" data-val="*">*</button>
+
+            <button class="btn" data-val="7">7</button>
+            <button class="btn" data-val="8">8</button>
+            <button class="btn" data-val="9">9</button>
+            <button class="btn orange" data-val="-">-</button>
+
+            <button class="btn" data-val="4">4</button>
+            <button class="btn" data-val="5">5</button>
+            <button class="btn" data-val="6">6</button>
+            <button class="btn orange" data-val="+">+</button>
+
+            <button class="btn" data-val="1">1</button>
+            <button class="btn" data-val="2">2</button>
+            <button class="btn" data-val="3">3</button>
+            
+            <button class="btn green row-2" data-val="=">=</button>
+            <button class="btn col-2" data-val="0">0</button>
+            <button class="btn" data-val=".">.</button>
+        </div>
+    </div>
+
+    <script>
+        /* JavaScript stays in the <script> tag */
+        const display = document.getElementById("display");
+        const allButtons = document.querySelectorAll(".btn");
+
+        allButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                const value = button.getAttribute("data-val");
+
+                if (value === "C") {
+                    display.innerText = "0";
+                } 
+                else if (value === "=") {
+                    try {
+                        display.innerText = eval(display.innerText);
+                    } catch {
+                        display.innerText = "Error";
+                    }
+                } 
+                else {
+                    if (display.innerText === "0" || display.innerText === "Error") {
+                        display.innerText = value;
+                    } else {
+                        display.innerText += value;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
