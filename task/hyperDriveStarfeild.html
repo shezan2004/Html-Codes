@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Hyperdrive Starfield</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body, html {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: crosshair;
+        }
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .ui-overlay {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            pointer-events: none;
+            user-select: none;
+        }
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+        p {
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+        @keyframes pulse {
+            from { text-shadow: 0 0 5px #fff, 0 0 10px #00f7ff; }
+            to { text-shadow: 0 0 10px #fff, 0 0 20px #00f7ff, 0 0 30px #0026ff; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ui-overlay">
+        <h1>Starfield Navigator</h1>
+        <p>Move mouse to steer • Click & Hold for Hyperdrive</p>
+    </div>
+
+    <canvas id="starfield"></canvas>
+
+    <script>
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+
+        // Configuration
+        const STAR_COUNT = 400;
+        let speed = 2;
+        let targetSpeed = 2;
+        const stars = [];
+
+        // Mouse coordinates initialized to center
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let targetMouseX = window.innerWidth / 2;
+        let targetMouseY = window.innerHeight / 2;
+
+        // Resize handler
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if(stars.length === 0) initStars();
+        }
+
+        // Star Blueprint
+        class Star {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                // Randomly distribute stars in 3D space (-width to +width)
+                this.x = (Math.random() - 0.5) * canvas.width * 2;
+                this.y = (Math.random() - 0.5) * canvas.height * 2;
+                this.z = Math.random() * canvas.width; // Depth
+                
+                this.px = 0; // Previous X for trail effect
+                this.py = 0; // Previous Y for trail effect
+                
+                // Give stars subtle hue variations (cyan, purple, white)
+                const colors = ['#fff', '#fff', '#fff', '#a5f3fc', '#c084fc'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            update() {
+                // Store previous projected positions
+                this.px = (this.x / this.z) * canvas.width + mouseX;
+                this.py = (this.y / this.z) * canvas.height + mouseY;
+
+                // Move star closer (decrease depth)
+                this.z -= speed;
+
+                // If star passes the camera or goes off-screen, reset it
+                if (this.z <= 0) {
+                    this.reset();
+                    return;
+                }
+
+                // Project new 3D position to 2D screen
+                this.sx = (this.x / this.z) * canvas.width + mouseX;
+                this.sy = (this.y / this.z) * canvas.height + mouseY;
+
+                // Reset if it flies way off screen bounds
+                if (this.sx < 0 || this.sx > canvas.width || this.sy < 0 || this.sy > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.strokeStyle = this.color;
+                // Line thickness increases slightly as it gets closer
+                ctx.lineWidth = (1 - this.z / canvas.width) * 2.5; 
+                ctx.lineCap = 'round';
+                
+                // Draw a line from previous position to current position to create motion blur
+                ctx.moveTo(this.px, this.py);
+                ctx.lineTo(this.sx, this.sy);
+                ctx.stroke();
+            }
+        }
+
+        function initStars() {
+            for (let i = 0; i < STAR_COUNT; i++) {
+                stars.push(new Star());
+            }
+        }
+
+        // Smoothly interpolate values (Easing)
+        function lerp(start, end, amt) {
+            return (1 - amt) * start + amt * end;
+        }
+
+        // Animation Loop
+        function animate() {
+            // Semi-transparent black background creates an automatic motion trail
+            ctx.fillStyle = `rgba(0, 0, 0, ${speed > 10 ? 0.15 : 0.4})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Smoothly transition speed and mouse position
+            speed = lerp(speed, targetSpeed, 0.05);
+            mouseX = lerp(mouseX, targetMouseX, 0.08);
+            mouseY = lerp(mouseY, targetMouseY, 0.08);
+
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // Event Listeners
+        window.addEventListener('resize', resizeCanvas);
+        
+        window.addEventListener('mousemove', (e) => {
+            targetMouseX = e.clientX;
+            targetMouseY = e.clientY;
+        });
+
+        window.addEventListener('mousedown', () => targetSpeed = 35);
+        window.addEventListener('mouseup', () => targetSpeed = 2);
+        
+        // Touch support for mobile
+        window.addEventListener('touchmove', (e) => {
+            targetMouseX = e.touches[0].clientX;
+            targetMouseY = e.touches[0].clientY;
+        });
+        window.addEventListener('touchstart', () => targetSpeed = 35);
+        window.addEventListener('touchend', () => targetSpeed = 2);
+
+        // Run
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>
