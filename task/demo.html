@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML & JavaScript Demo</title>
+    <style>
+        /* Basic modern styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.5s ease;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .counter-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #3498db;
+            margin: 20px 0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary { background-color: #2ecc71; color: white; }
+        .btn-primary:hover { background-color: #27ae60; }
+
+        .btn-danger { background-color: #e74c3c; color: white; }
+        .btn-danger:hover { background-color: #c0392b; }
+
+        .btn-secondary { background-color: #34495e; color: white; }
+        .btn-secondary:hover { background-color: #2c3e50; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Interactive Demo</h1>
+        <p>Click the buttons below to see JavaScript in action.</p>
+        
+        <!-- The dynamic counter text -->
+        <div class="counter-display" id="counter">0</div>
+
+        <div class="btn-group">
+            <button class="btn-primary" id="incrementBtn">Increment</button>
+            <button class="btn-danger" id="decrementBtn">Decrement</button>
+        </div>
+
+        <button class="btn-secondary" id="bgBtn">Change Theme Color</button>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // 1. Select DOM elements
+        const counterDisplay = document.getElementById('counter');
+        const incrementBtn = document.getElementById('incrementBtn');
+        const decrementBtn = document.getElementById('decrementBtn');
+        const bgBtn = document.getElementById('bgBtn');
+
+        // 2. Initialize state variables
+        let count = 0;
+
+        // 3. Define event listener functions
+        function updateDisplay() {
+            counterDisplay.textContent = count;
+            
+            // Fun extra: Change counter color based on positive/negative numbers
+            if (count > 0) {
+                counterDisplay.style.color = '#2ecc71';
+            } else if (count < 0) {
+                counterDisplay.style.color = '#e74c3c';
+            } else {
+                counterDisplay.style.color = '#3498db';
+            }
+        }
+
+        function getRandomColor() {
+            const colors = ['#f4f7f6', '#e8f4f8', '#eef9f1', '#fdf2f2', '#fbf3e7'];
+            const randomIndex = Math.floor(Math.random() * colors.length);
+            return colors[randomIndex];
+        }
+
+        // 4. Attach event listeners to buttons
+        incrementBtn.addEventListener('click', () => {
+            count++;
+            updateDisplay();
+        });
+
+        decrementBtn.addEventListener('click', () => {
+            count--;
+            updateDisplay();
+        });
+
+        bgBtn.addEventListener('click', () => {
+            document.body.style.backgroundColor = getRandomColor();
+        });
+    </script>
+</body>
+</html>
