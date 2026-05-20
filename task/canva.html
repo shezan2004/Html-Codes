@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Rain Matrix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Overlay text just to make it look like a terminal */
+        .system-status {
+            position: absolute;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #00ff66;
+            pointer-events: none; /* Let's you click through the text */
+            text-align: center;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="system-status">
+        <h1>SYSTEM_OVERRIDE_ACTIVE</h1>
+        <p>Click anywhere to refresh the stream</p>
+    </div>
+
+    <canvas id="matrixCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Make the canvas fit the entire screen
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Katakana, alphabet, and numeric characters
+        const chars = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const charArray = chars.split("");
+
+        const fontSize = 16;
+        // Calculate how many columns can fit across the screen width
+        let columns = canvas.width / fontSize;
+
+        // An array to track the vertical (Y) position of every single column
+        let rainDrops = [];
+        for (let x = 0; x < columns; x++) {
+            // Start drops at random heights above the screen so they cascade naturally
+            rainDrops[x] = Math.random() * -100; 
+        }
+
+        function drawMatrix() {
+            // The secret sauce: draw a translucent black rectangle over the previous frame
+            // This leaves a trailing fade effect behind the falling letters
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0f0'; // Cyber green text color
+            ctx.font = fontSize + 'px monospace';
+
+            // Loop through every single column to draw a letter
+            for (let i = 0; i < rainDrops.length; i++) {
+                // Pick a random character
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                
+                // Calculate X coordinate based on column index
+                const x = i * fontSize;
+                // Calculate Y coordinate based on drop counter
+                const y = rainDrops[i] * fontSize;
+
+                // Draw the character
+                ctx.fillText(text, x, y);
+
+                // If the drop hits the bottom of the screen, randomly reset it to the top
+                if (y > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+
+                // Move the drop further down for the next frame
+                rainDrops[i]++;
+            }
+        }
+
+        // Recalculate column size if the user resizes their screen mid-way
+        window.addEventListener('resize', () => {
+            columns = canvas.width / fontSize;
+            rainDrops = [];
+            for (let x = 0; x < columns; x++) {
+                rainDrops[x] = Math.random() * -100;
+            }
+        });
+
+        // Click to scramble the drops instantly
+        window.addEventListener('click', () => {
+            for (let i = 0; i < rainDrops.length; i++) {
+                rainDrops[i] = Math.random() * -20;
+            }
+        });
+
+        // Run the animation loop roughly 30-60 times a second
+        setInterval(drawMatrix, 30);
+    </script>
+</body>
+</html>
