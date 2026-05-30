@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Matrix Terminal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #020202;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Terminal Overlay HUD */
+        .terminal-hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .system-logs {
+            max-width: 400px;
+            color: #00ff66;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            line-height: 1.6;
+            text-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
+        }
+
+        .glitch-title {
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            position: relative;
+            animation: glitch 4s infinite;
+        }
+
+        .input-prompt {
+            color: #00ff66;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            animation: blink 1s infinite;
+        }
+
+        /* Subtle scanlines effect */
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px -2px #ff0055, -2px 2px #00fffa; }
+            2% { text-shadow: -3px 3px #ff0055, 3px -3px #00fffa; }
+            4% { text-shadow: 2px 2px #ff0055, -2px -2px #00fffa; }
+            6% { text-shadow: 0 0 0px #ff0055, 0 0 0px #00fffa; }
+            100% { text-shadow: 0 0 0px #ff0055, 0 0 0px #00fffa; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scanlines"></div>
+    <canvas id="terminalCanvas"></canvas>
+
+    <div class="terminal-hud">
+        <header>
+            <div class="glitch-title">OVERRIDE.SYS</div>
+            <div class="system-logs">
+                <p>> INITIALIZING CORE PROTOCOL...</p>
+                <p>> LINK ESTABLISHED // SECURE</p>
+                <p>> STATUS: ACTIVE</p>
+            </div>
+        </header>
+
+        <div class="input-prompt">
+            _ TYPE ANYWHERE TO INJECT DATA
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('terminalCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        // Matrix characters (Katakana, English alphabet, Numbers)
+        const charString = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const characters = charString.split("");
+
+        const fontSize = 16;
+        let columns = Math.floor(width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        // Mouse coordinates for magnetic distortion
+        const mouse = { x: -1000, y: -1000 };
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            columns = Math.floor(width / fontSize);
+            drops = Array(columns).fill(1);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        // Leaving the page clears the mouse disturbance
+        window.addEventListener('mouseleave', () => {
+            mouse.x = -1000;
+            mouse.y = -1000;
+        });
+
+        // Inject keystrokes directly into falling columns
+        window.addEventListener('keydown', (e) => {
+            if (e.key.length === 1) {
+                // Find a column near the center or randomly to inject the key
+                const randomColumn = Math.floor(Math.random() * columns);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${fontSize + 6}px monospace`;
+                ctx.fillText(e.key.toUpperCase(), randomColumn * fontSize, drops[randomColumn] * fontSize);
+                
+                // Force drop boost
+                drops[randomColumn] -= 5;
+                if (drops[randomColumn] < 0) drops[randomColumn] = 0;
+            }
+        });
+
+        function drawMatrix() {
+            // Faint black background overlay to create smooth trail fading
+            ctx.fillStyle = 'rgba(2, 2, 2, 0.06)';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                // Select a random character
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // Calculate distance to mouse
+                const dx = mouse.x - x;
+                const dy = mouse.y - y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Grid distortion math: If mouse is close, push characters away or glitch color
+                if (distance < 120) {
+                    ctx.fillStyle = '#ff0055'; // Neon Pink/Red glitch color
+                    ctx.font = `bold ${fontSize + 2}px monospace`;
+                } else {
+                    // Gradual color variance based on screen depth
+                    const greenIntensity = Math.floor(Math.random() * 155) + 100;
+                    ctx.fillStyle = `rgb(0, ${greenIntensity}, 102)`;
+                    ctx.font = fontSize + 'px monospace';
+                }
+
+                // Randomly highlight leading rain heads with pure white
+                if (Math.random() > 0.97) {
+                    ctx.fillStyle = '#ffffff';
+                }
+
+                ctx.fillText(text, x, y);
+
+                // Reset drop back to top once it hits bottom with randomized timing
+                if (y > height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                // Incremental cascade velocity
+                drops[i]++;
+            }
+        }
+
+        // Consistent update rate
+        setInterval(drawMatrix, 33);
+    </script>
+</body>
+</html>
