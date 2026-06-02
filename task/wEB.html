@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Responsive Web Page</title>
+    <style>
+        /* Basic CSS Reset & Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        /* Header Styling */
+        header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: #34495e;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #1abc9c;
+        }
+
+        /* Main Layout Container */
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* Main Content Area */
+        main {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        main h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        main p {
+            margin-bottom: 15px;
+        }
+
+        /* Sidebar Area */
+        aside {
+            background: #eef2f3;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        aside h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        /* Responsive adjustment for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to My Website</h1>
+        <p>A simple, clean HTML & CSS structure</p>
+    </header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="container">
+        
+        <main>
+            <h2>Main Article Title</h2>
+            <p>This is the main content area of your webpage. You can add text, images, videos, or forms here. The layout uses CSS Grid to cleanly separate the content from the sidebar on desktop viewports, and folds into a single column on mobile devices.</p>
+            <p>HTML (HyperText Markup Language) provides the structural skeleton of the webpage, while CSS (Cascading Style Sheets) controls how everything looks visually.</p>
+        </main>
+
+        <aside>
+            <h3>Sidebar</h3>
+            <p>This space is ideal for widgets, quick links, ads, or secondary information related to your page.</p>
+        </aside>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Your Name / Company. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
