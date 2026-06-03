@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Pricing Component</title>
+    <style>
+        /* Modern CSS Reset & Variables */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #22c55e;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        /* Pricing Card Styling */
+        .pricing-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            color: var(--text-main);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        /* Subtle glow effect on hover */
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: #6366f1;
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
+        }
+
+        /* "Popular" Badge */
+        .badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--primary-gradient);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0.35rem 0.75rem;
+            border-radius: 99px;
+            letter-spacing: 0.05em;
+        }
+
+        .card-header .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .card-header .plan-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        /* Price Section */
+        .price-container {
+            margin: 2rem 0;
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+
+        .currency {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            align-self: flex-start;
+            margin-top: 0.2rem;
+        }
+
+        .price {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .period {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Features List */
+        .features-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        /* Custom SVG Checkmark */
+        .feature-item::before {
+            content: "";
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: var(--accent);
+            /* Standard SVG checkmark mask */
+            clip-path: polygon(14% 44%, 0 58%, 38% 96%, 100% 23%, 84% 9%, 38% 66%);
+            flex-shrink: 0;
+        }
+
+        /* Pro Call-to-Action Button */
+        .cta-btn {
+            display: block;
+            width: 100%;
+            background: var(--primary-gradient);
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .cta-btn:hover {
+            opacity: 0.95;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+            transform: scale(1.02);
+        }
+
+        .cta-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <article class="pricing-card">
+        <span class="badge">Most Popular</span>
+        
+        <header class="card-header">
+            <h2 class="plan-name">Pro Plan</h2>
+            <p class="plan-desc">Perfect for scaling creators and growing development teams.</p>
+        </header>
+
+        <div class="price-container">
+            <span class="currency">$</span>
+            <span class="price">49</span>
+            <span class="period">/ month</span>
+        </div>
+
+        <ul class="features-list">
+            <li class="feature-item">Unlimited projects & deployments</li>
+            <li class="feature-item">Custom domain integration</li>
+            <li class="feature-item">Advanced analytics dashboard</li>
+            <li class="feature-item">24/7 Priority email support</li>
+            <li class="feature-item">100 GB SSD cloud storage</li>
+        </ul>
+
+        <button class="cta-btn" type="button">Get Started Today</button>
+    </article>
+
+</body>
+</html>
