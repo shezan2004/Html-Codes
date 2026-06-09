@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Weather Dashboard</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-sub: #b0bec5;
+            --accent: #00e676;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .dashboard {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        /* Search Bar */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+        }
+
+        .search-box button {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            background: var(--accent);
+            color: #0f2027;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background: #00c853;
+            transform: translateY(-2px);
+        }
+
+        /* Weather Main Info */
+        .weather-main {
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .location {
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+
+        .temp-display {
+            font-size: 4.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin: 15px 0;
+        }
+
+        .condition {
+            font-size: 1.2rem;
+            color: var(--text-sub);
+            text-transform: capitalize;
+        }
+
+        /* Weather Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            border-top: 1px solid var(--card-border);
+            padding-top: 25px;
+        }
+
+        .detail-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .detail-card p {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 5px;
+        }
+
+        .detail-card span {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Simple Loading State */
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <div class="search-box">
+            <input type="text" id="city-input" placeholder="Enter city name..." value="New York">
+            <button id="search-btn">Search</button>
+        </div>
+
+        <div class="weather-main" id="weather-info">
+            <h2 class="location" id="city-name">New York</h2>
+            <div class="temp-display" id="temperature">24°C</div>
+            <p class="condition" id="condition">Partly Cloudy</p>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-card">
+                <p>Humidity</p>
+                <span id="humidity">62%</span>
+            </div>
+            <div class="detail-card">
+                <p>Wind Speed</p>
+                <span id="wind">14 km/h</span>
+            </div>
+            <div class="detail-card">
+                <p>Visibility</p>
+                <span id="visibility">10 km</span>
+            </div>
+            <div class="detail-card">
+                <p>Air Quality</p>
+                <span id="aqi" style="color: var(--accent);">Good</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data generator to simulate an API response without needing an API key
+        const getWeatherData = (cityName) => {
+            const conditions = ['Sunny', 'Rainy', 'Partly Cloudy', 'Clear Sky', 'Stormy'];
+            const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
+            
+            // Generate deterministic values based on string length so it feels consistent
+            const baseValue = cityName.length;
+            const temp = Math.min(Math.max((baseValue * 3) % 35, 10), 38); // bound between 10C and 38C
+            const humidity = 40 + (baseValue * 4) % 50;
+            const wind = 5 + (baseValue * 2) % 25;
+            
+            return {
+                city: cityName.charAt(0).toUpperCase() + cityName.slice(1),
+                temp: `${temp}°C`,
+                condition: randomCondition,
+                humidity: `${humidity}%`,
+                wind: `${wind} km/h`,
+                visibility: `${10 - (baseValue % 5)} km`,
+                aqi: baseValue % 3 === 0 ? 'Fair' : 'Good'
+            };
+        };
+
+        // DOM Elements
+        const cityInput = document.getElementById('city-input');
+        const searchBtn = document.getElementById('search-btn');
+        const dashboard = document.querySelector('.dashboard');
+        
+        const cityNameEl = document.getElementById('city-name');
+        const tempEl = document.getElementById('temperature');
+        const conditionEl = document.getElementById('condition');
+        const humidityEl = document.getElementById('humidity');
+        const windEl = document.getElementById('wind');
+        const visibilityEl = document.getElementById('visibility');
+        const aqiEl = document.getElementById('aqi');
+
+        // Update DOM function
+        function updateWeather() {
+            const targetCity = cityInput.value.trim();
+            if (!targetCity) return alert('Please enter a city!');
+
+            // Add a brief simulated loading effect
+            dashboard.classList.add('loading');
+            
+            setTimeout(() => {
+                const data = getWeatherData(targetCity);
+                
+                // Update text elements
+                cityNameEl.textContent = data.city;
+                tempEl.textContent = data.temp;
+                conditionEl.textContent = data.condition;
+                humidityEl.textContent = data.humidity;
+                windEl.textContent = data.wind;
+                visibilityEl.textContent = data.visibility;
+                aqiEl.textContent = data.aqi;
+                
+                // Color code AQI dynamic styling
+                aqiEl.style.color = data.aqi === 'Good' ? '#00e676' : '#ffeb3b';
+
+                // Remove loading effect
+                dashboard.classList.remove('loading');
+            }, 400); 
+        }
+
+        // Event Listeners
+        searchBtn.addEventListener('click', updateWeather);
+        
+        cityInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                updateWeather();
+            }
+        });
+    </script>
+</body>
+</html>
