@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Combined Random HTML + CSS</title>
+  <style>
+    :root{
+      --bg1: #0f2027;
+      --bg2: #203a43;
+      --bg3: #2c5364;
+      --accent: #7efcff;
+      --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2) 40%,var(--bg3));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+      color:#e6f7ff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      position:relative;
+      width:min(920px,92vw);
+      max-width:720px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:2rem;
+      perspective:1000px;
+    }
+
+    .card{
+      position:relative;
+      width:420px;
+      padding:28px;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      backdrop-filter: blur(8px) saturate(120%);
+      transform: translateZ(0);
+      transition: transform 400ms cubic-bezier(.2,.9,.3,1), box-shadow 300ms;
+      border: 1px solid var(--glass-2);
+    }
+    .card:hover{
+      transform: translateY(-10px) rotateX(4deg);
+      box-shadow: 0 20px 50px rgba(2,6,23,0.7);
+    }
+
+    .badge{
+      position:absolute;
+      right:16px;
+      top:16px;
+      background:linear-gradient(90deg,#ff9a9e,#fad0c4);
+      color:#111;
+      font-weight:700;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      letter-spacing:0.6px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.25);
+    }
+
+    h1{
+      font-size:22px;
+      margin-bottom:6px;
+      letter-spacing:0.2px;
+      color: #eafcff;
+    }
+
+    .lead{
+      color: #cfeefb;
+      opacity:0.9;
+      margin-bottom:14px;
+      font-size:14px;
+    }
+
+    .tags{
+      display:flex;
+      gap:8px;
+      margin-bottom:18px;
+    }
+    .tags span{
+      font-size:12px;
+      padding:6px 8px;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      color:#bfeef7;
+    }
+
+    .cta{
+      display:inline-block;
+      appearance:none;
+      border: none;
+      padding:10px 16px;
+      border-radius:10px;
+      background: linear-gradient(90deg,#5ee7df,#b490ca);
+      color:#052026;
+      font-weight:700;
+      cursor:pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      box-shadow: 0 8px 20px rgba(92,60,120,0.18);
+    }
+    .cta:hover{ transform: translateY(-4px) scale(1.02); }
+
+    .stars{
+      position:absolute;
+      right:-30px;
+      top:-40px;
+      width:240px;
+      height:140px;
+      opacity:0.15;
+      filter: blur(0.6px);
+      transform: rotate(6deg);
+      pointer-events:none;
+      animation: floatStars 6s ease-in-out infinite;
+    }
+    @keyframes floatStars{
+      0%{ transform:translateY(0) rotate(6deg) }
+      50%{ transform:translateY(-8px) rotate(6deg) }
+      100%{ transform:translateY(0) rotate(6deg) }
+    }
+
+    .wrap::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(closest-side, rgba(126,252,255,0.12), transparent 40%),
+                  conic-gradient(from 120deg at 20% 20%, #7efcff66, #b490ca55, transparent 60%);
+      mix-blend-mode:screen;
+      z-index:-1;
+      animation: spin 10s linear infinite;
+    }
+    @keyframes spin{
+      from{ transform: rotate(0deg) }
+      to{ transform: rotate(360deg) }
+    }
+
+    @media (max-width:520px){
+      .card{ width:92vw; padding:18px; border-radius:14px }
+      .stars{ display:none }
+    }
+
+    /* Small todo list inside the card */
+    .todo{
+      margin-top:12px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .todo input[type="text"]{
+      flex:1;
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.02);
+      color: #e6f7ff;
+    }
+    .todo-list{
+      margin-top:12px;
+      max-height:140px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .todo-item{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:8px;
+      background: rgba(255,255,255,0.01);
+      border:1px solid rgba(255,255,255,0.02);
+      border-radius:10px;
+      font-size:13px;
+    }
+    .todo-item.done{opacity:0.6;text-decoration:line-through}
+    .todo-item button{margin-left:auto;background:transparent;border:none;color:var(--accent);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="card">
+      <div class="badge">NEW</div>
+      <h1>Stellar Widget</h1>
+      <p class="lead">A tiny random component with animated gradient and a mini to-do demo.</p>
+
+      <div class="tags">
+        <span>HTML</span><span>CSS</span><span>JS</span>
+      </div>
+
+      <div class="todo">
+        <input id="taskInput" type="text" placeholder="Add a quick task and press Enter" />
+        <button class="cta" id="addBtn">Add</button>
+      </div>
+
+      <div class="todo-list" id="list"></div>
+
+    </div>
+    <svg class="stars" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden>
+      <circle cx="20" cy="20" r="2"/>
+      <circle cx="50" cy="40" r="1.6"/>
+      <circle cx="160" cy="10" r="1.8"/>
+      <circle cx="120" cy="70" r="1.4"/>
+      <circle cx="80" cy="30" r="2.2"/>
+    </svg>
+  </div>
+
+  <script>
+    const input = document.getElementById('taskInput');
+    const list = document.getElementById('list');
+    const addBtn = document.getElementById('addBtn');
+
+    function addTask(text){
+      if(!text) return;
+      const item = document.createElement('div');
+      item.className = 'todo-item';
+      item.innerHTML = `<input type="checkbox"> <span>${text}</span> <button>✕</button>`;
+      const chk = item.querySelector('input');
+      const del = item.querySelector('button');
+      const span = item.querySelector('span');
+      chk.addEventListener('change', ()=>{
+        item.classList.toggle('done', chk.checked);
+      });
+      del.addEventListener('click', ()=> item.remove());
+      list.prepend(item);
+      input.value='';
+    }
+
+    addBtn.addEventListener('click', ()=> addTask(input.value.trim()));
+    input.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') addTask(input.value.trim()); });
+
+    // sample random starter tasks
+    const starters = ['Buy star maps','Refactor nebula code','Ship the widget','Write demo notes'];
+    starters.forEach(t=> addTask(t));
+  </script>
+</body>
+</html>
