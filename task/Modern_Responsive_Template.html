@@ -3,25 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Responsive Template</title>
+    <meta name="description" content="DevSpace - A professional, modern, and responsive web template built with semantic HTML5 and CSS3.">
+    <meta name="keywords" content="responsive, template, modern, professional, web design">
+    <meta name="author" content="DevSpace Team">
+    <meta name="theme-color" content="#4f46e5">
+    <title>DevSpace - Professional Web Template</title>
     <style>
-        /* Modern CSS Reset & Variables */
+        /* ============================================
+           MODERN CSS RESET & DESIGN SYSTEM VARIABLES
+           ============================================ */
         :root {
             --bg-color: #f8f9fa;
             --card-bg: #ffffff;
             --text-color: #212529;
+            --text-secondary: #6c757d;
             --primary-color: #4f46e5;
             --primary-hover: #4338ca;
+            --primary-light: #e0e7ff;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
             --border-color: #e5e7eb;
-            --max-width: 1100px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --max-width: 1200px;
             --transition: all 0.3s ease;
+            --border-radius: 8px;
+            --spacing-unit: 1rem;
         }
 
         [data-theme="dark"] {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
             --text-color: #f1f5f9;
+            --text-secondary: #cbd5e1;
             --border-color: #334155;
+            --primary-light: #312e81;
         }
 
         * {
@@ -30,21 +48,61 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.6;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        /* ============================================
+           TYPOGRAPHY
+           ============================================ */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
             transition: var(--transition);
         }
 
-        /* Header & Navigation */
+        a:hover {
+            color: var(--primary-hover);
+        }
+
+        /* ============================================
+           HEADER & NAVIGATION
+           ============================================ */
         header {
             background-color: var(--card-bg);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
             transition: var(--transition);
         }
 
@@ -61,46 +119,130 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-color);
-            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: translateX(2px);
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             align-items: center;
             list-style: none;
         }
 
         .nav-links a {
-            text-decoration: none;
             color: var(--text-color);
             font-weight: 500;
-            transition: var(--transition);
+            position: relative;
+            padding-bottom: 0.25rem;
         }
 
-        .nav-links a:hover {
-            color: var(--primary-color);
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
         }
 
-        /* Theme Toggle Button */
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ============================================
+           BUTTONS
+           ============================================ */
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
         .theme-btn {
             background: none;
-            border: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            padding: 0.5rem 1.25rem;
             border-radius: 20px;
-            cursor: pointer;
             color: var(--text-color);
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.9rem;
             transition: var(--transition);
         }
 
-        .theme-btn:hover {
+        .theme-btn:hover,
+        .theme-btn:focus {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
+            outline: none;
         }
 
-        /* Hero Section */
+        .cta-btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            cursor: pointer;
+            text-align: center;
+            user-select: none;
+        }
+
+        .cta-btn:hover,
+        .cta-btn:focus {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            outline: none;
+        }
+
+        .cta-btn:active {
+            transform: translateY(0);
+        }
+
+        .cta-btn--secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .cta-btn--secondary:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* ============================================
+           SKIP NAVIGATION
+           ============================================ */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
         .hero {
             max-width: var(--max-width);
             margin: 4rem auto;
@@ -109,135 +251,430 @@
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            letter-spacing: -0.05em;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
         }
 
         .hero p {
             font-size: 1.25rem;
-            color: #64748b;
+            color: var(--text-secondary);
             max-width: 600px;
-            margin: 0 auto 2rem auto;
+            margin: 0 auto 2.5rem auto;
+            line-height: 1.8;
         }
 
-        .cta-btn {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .cta-btn:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-        }
-
-        /* Main Features Grid */
+        /* ============================================
+           GRID & CARDS
+           ============================================ */
         .grid {
             max-width: var(--max-width);
-            margin: 2rem auto 6rem auto;
+            margin: 6rem auto;
             padding: 0 2rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
         }
 
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 2rem;
-            border-radius: 12px;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
             transition: var(--transition);
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            box-shadow: var(--shadow-sm);
         }
 
         .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
         }
 
         .card h3 {
-            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        /* Footer */
+        .card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
         footer {
             background-color: var(--card-bg);
             border-top: 1px solid var(--border-color);
-            padding: 2rem;
-            text-align: center;
-            font-size: 0.9rem;
+            margin-top: 6rem;
+            padding: 3rem 2rem;
             transition: var(--transition);
         }
 
-        /* Responsive Design */
+        .footer-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .footer-section a {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.25rem; }
-            .nav-links { display: none; } /* Simplified for starter layout */
+            :root {
+                font-size: 15px;
+            }
+
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.75rem; }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero {
+                margin: 2rem auto;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                margin: 4rem auto;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 1.875rem;
+            }
+
+            h1 { font-size: 1.75rem; }
+            h2 { font-size: 1.5rem; }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .nav-container {
+                padding: 1rem;
+            }
+        }
+
+        /* ============================================
+           ACCESSIBILITY
+           ============================================ */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                color-scheme: dark;
+            }
+        }
+
+        /* ============================================
+           FOCUS STATES FOR ACCESSIBILITY
+           ============================================ */
+        *:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <header>
-        <nav class="nav-container">
-            <a href="#" class="logo">DevSpace</a>
+    <header role="banner">
+        <nav class="nav-container" role="navigation" aria-label="Main navigation">
+            <a href="#" class="logo" aria-label="DevSpace - Home">
+                <span aria-hidden="true">⚡</span> DevSpace
+            </a>
             <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#about">About</a></li>
-                <li><button class="theme-btn" id="themeToggle">Toggle Mode</button></li>
+                <li><a href="#features" aria-label="Features section">Features</a></li>
+                <li><a href="#about" aria-label="About section">About</a></li>
+                <li><a href="#contact" aria-label="Contact section">Contact</a></li>
+                <li>
+                    <button 
+                        class="theme-btn" 
+                        id="themeToggle" 
+                        aria-label="Toggle dark mode"
+                        aria-pressed="false"
+                    >
+                        🌙 Mode
+                    </button>
+                </li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero">
-        <h1>Build Something Beautiful</h1>
-        <p>A clean, responsive, and production-ready HTML starter template using modern CSS variables and semantic structures.</p>
-        <a href="#features" class="cta-btn">Get Started</a>
-    </section>
+    <main id="main-content" role="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <h1 id="hero-title">Build Something Beautiful</h1>
+            <p>A clean, responsive, and production-ready HTML template using modern CSS variables, semantic structures, and accessibility best practices.</p>
+            <div class="hero-buttons">
+                <a href="#features" class="cta-btn">Get Started</a>
+                <a href="#contact" class="cta-btn cta-btn--secondary">Learn More</a>
+            </div>
+        </section>
 
-    <main class="grid" id="features">
-        <article class="card">
-            <h3>Semantic HTML5</h3>
-            <p>Uses proper semantic elements like header, nav, main, and article for better accessibility and SEO metrics.</p>
-        </article>
+        <section class="grid" id="features" aria-labelledby="features-title">
+            <h2 id="features-title" style="grid-column: 1 / -1; margin-bottom: 1rem;">Key Features</h2>
+            
+            <article class="card">
+                <h3>📋 Semantic HTML5</h3>
+                <p>Uses proper semantic elements like <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, and <code>&lt;article&gt;</code> for better accessibility and SEO performance.</p>
+            </article>
 
-        <article class="card">
-            <h3>CSS Variables</h3>
-            <p>Dynamic color themes made simple. Easily swap out branding palettes using global CSS custom properties.</p>
-        </article>
+            <article class="card">
+                <h3>🎨 CSS Variables & Themes</h3>
+                <p>Dynamic color themes made simple. Easily customize branding palettes and dark mode support using global CSS custom properties.</p>
+            </article>
 
-        <article class="card">
-            <h3>Fully Responsive</h3>
-            <p>Designed from the ground up using CSS Grid and Flexbox to look pristine on mobile, tablet, and desktop screens.</p>
-        </article>
+            <article class="card">
+                <h3>📱 Fully Responsive</h3>
+                <p>Designed from the ground up using CSS Grid and Flexbox with mobile-first approach to look pristine on all screen sizes.</p>
+            </article>
+
+            <article class="card">
+                <h3>♿ Accessibility First</h3>
+                <p>WCAG 2.1 compliant with proper ARIA labels, keyboard navigation, focus states, and semantic markup for inclusive design.</p>
+            </article>
+
+            <article class="card">
+                <h3>⚡ Performance Optimized</h3>
+                <p>Lightweight, no dependencies, and optimized for fast loading. Modern CSS techniques ensure smooth animations and transitions.</p>
+            </article>
+
+            <article class="card">
+                <h3>🔧 Easy to Customize</h3>
+                <p>Well-organized code with clear comments. Modify CSS variables or HTML structure easily to match your project requirements.</p>
+            </article>
+        </section>
+
+        <section class="grid" id="about" aria-labelledby="about-title" style="background-color: var(--card-bg); padding: 3rem 2rem; margin-left: -2rem; margin-right: -2rem; margin-top: 4rem;">
+            <div style="max-width: var(--max-width); margin: 0 auto; padding: 0 2rem;">
+                <h2 id="about-title">Why Choose This Template?</h2>
+                <p style="font-size: 1.1rem; max-width: 600px;">This professional template combines modern web standards with practical design patterns. Perfect for developers and designers who value clean code, accessibility, and maintainability.</p>
+            </div>
+        </section>
     </main>
 
-    <footer>
-        <p>&copy; 2026 DevSpace. Built with clean code.</p>
+    <footer role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#changelog">Changelog</a>
+                    <a href="#roadmap">Roadmap</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <a href="#documentation">Documentation</a>
+                    <a href="#tutorials">Tutorials</a>
+                    <a href="#community">Community</a>
+                    <a href="#support">Support</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <a href="#about">About</a>
+                    <a href="#blog">Blog</a>
+                    <a href="#careers">Careers</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#terms">Terms of Service</a>
+                    <a href="#cookies">Cookie Policy</a>
+                    <a href="#legal">Legal Notice</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 DevSpace. All rights reserved. | Built with clean code and best practices.</p>
+            </div>
+        </div>
     </footer>
 
     <script>
-        const themeToggle = document.getElementById('themeToggle');
-        
-        // Check for saved user preference, otherwise use system preference
-        const savedTheme = localStorage.getItem('theme') || 
-            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        
-        document.documentElement.setAttribute('data-theme', savedTheme);
+        'use strict';
 
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
+        /**
+         * Theme Manager
+         * Handles dark/light mode toggling with localStorage persistence
+         */
+        class ThemeManager {
+            constructor() {
+                this.themeToggle = document.getElementById('themeToggle');
+                this.htmlElement = document.documentElement;
+                this.init();
+            }
+
+            init() {
+                // Get saved preference or system preference
+                const savedTheme = this.getSavedTheme();
+                this.setTheme(savedTheme);
+                
+                // Setup event listener
+                this.themeToggle.addEventListener('click', () => this.toggleTheme());
+            }
+
+            getSavedTheme() {
+                const saved = localStorage.getItem('theme');
+                if (saved) return saved;
+
+                // Check system preference
+                return window.matchMedia('(prefers-color-scheme: dark)').matches 
+                    ? 'dark' 
+                    : 'light';
+            }
+
+            setTheme(theme) {
+                const validTheme = (theme === 'dark') ? 'dark' : 'light';
+                this.htmlElement.setAttribute('data-theme', validTheme);
+                localStorage.setItem('theme', validTheme);
+                this.updateToggleButton(validTheme);
+            }
+
+            toggleTheme() {
+                const currentTheme = this.htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                this.setTheme(newTheme);
+            }
+
+            updateToggleButton(theme) {
+                if (this.themeToggle) {
+                    this.themeToggle.setAttribute('aria-pressed', theme === 'dark');
+                    this.themeToggle.textContent = theme === 'dark' ? '☀️ Mode' : '🌙 Mode';
+                }
+            }
+        }
+
+        /**
+         * Smooth Scroll Behavior Enhancement
+         * Improves smooth scrolling for anchor links
+         */
+        class SmoothScroller {
+            static init() {
+                document.querySelectorAll('a[href^="#"]').forEach(link => {
+                    link.addEventListener('click', this.handleSmoothScroll);
+                });
+            }
+
+            static handleSmoothScroll(e) {
+                const href = this.getAttribute('href');
+                const target = document.querySelector(href);
+                
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    target.focus();
+                }
+            }
+        }
+
+        /**
+         * Initialize App
+         * Runs when DOM is fully loaded
+         */
+        function initializeApp() {
+            // Initialize theme manager
+            new ThemeManager();
+
+            // Initialize smooth scrolling
+            SmoothScroller.init();
+
+            // Log success (for development)
+            console.log('✅ DevSpace template initialized successfully');
+        }
+
+        // Run initialization when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
     </script>
 </body>
 </html>
